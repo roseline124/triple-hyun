@@ -1,41 +1,47 @@
 /*
  * worktree design tokens (source of truth, plain CSS variables)
+ * Palette is derived from the logo: docs/design/assets/worktree-icon.svg
+ *   brown #140C09 (tile), cream #FFF4E8 (trunk and branches), sand #E8C49A (root, other jobs), orange #FF6A2B (the next job)
  * Rules and usage: docs/design/DESIGN-BIBLE.md
  * Tailwind v4 mirror: docs/design/tailwind-theme.css (keep both files in sync)
  */
 :root {
   /* ---- Color: primitives ---- */
-  --wt-pine: #0D3326;          /* ink, primary, outlines */
-  --wt-pine-700: #164A38;      /* primary hover */
-  --wt-pine-500: #5E8F6E;      /* graphics only (3.7:1 on white), never text */
-  --wt-pine-100: #C9DDD0;      /* hover wash, soft borders on paper */
-  --wt-lime: #CDEB6B;          /* accent, reward, success */
-  --wt-lime-hover: #DDF58F;
-  --wt-tangerine: #FF8040;     /* warm tile; text on it must be pine */
-  --wt-sky: #BDE2F2;
-  --wt-lemon: #FFE27A;
-  --wt-paper: #F3F5F0;         /* page background */
+  --wt-brown-950: #140C09;     /* LOGO. ink, hero tile, primary button */
+  --wt-brown-800: #2B1D17;     /* primary hover, secondary dark tile */
+  --wt-cream-50: #FFFAF3;      /* page background */
+  --wt-cream-100: #FFF4E8;     /* LOGO. text on dark, soft surface */
+  --wt-sand-100: #F6E6D0;      /* quiet tile */
+  --wt-sand-300: #E8C49A;      /* LOGO. guild and foundation, rewards */
+  --wt-orange-500: #FF6A2B;    /* LOGO. the one next thing. Text on it must be brown-950 */
+  --wt-orange-400: #FF8450;    /* orange hover */
+  --wt-orange-100: #FFE1D1;    /* soft highlight tile */
   --wt-white: #FFFFFF;
-  --wt-muted: #4A6357;         /* secondary text on paper, white, lime, sky, lemon. NOT on tangerine */
-  --wt-line: #E2E8E0;          /* decorative dividers only (1.25:1, carries no meaning) */
-  --wt-error: #B42318;
+  --wt-muted: #634D40;         /* secondary text on cream, white, sand, orange-100. NOT on orange-500 */
+  --wt-line: #EBDCC8;          /* decorative dividers only, carries no meaning */
+  --wt-skeleton: #EFE3D2;
+  --wt-success: #1F6B3A;       /* functional only */
+  --wt-success-soft: #E0F0E3;
+  --wt-error: #B42318;         /* functional only */
   --wt-error-soft: #FDE7E4;
-  --wt-skeleton: #E4E9E2;
 
   /* ---- Color: semantic (use these in product code) ---- */
-  --color-bg: var(--wt-paper);
+  --color-bg: var(--wt-cream-50);
   --color-surface: var(--wt-white);
-  --color-text: var(--wt-pine);
+  --color-text: var(--wt-brown-950);
   --color-text-muted: var(--wt-muted);
-  --color-text-on-dark: var(--wt-white);
-  --color-text-on-dark-muted: #D5E5DA;
-  --color-primary: var(--wt-pine);
-  --color-primary-hover: var(--wt-pine-700);
-  --color-accent: var(--wt-lime);
-  --color-accent-hover: var(--wt-lime-hover);
-  --color-border-strong: var(--wt-pine);
+  --color-text-on-dark: var(--wt-cream-100);
+  --color-text-on-dark-muted: #D9C6B4;
+  --color-primary: var(--wt-brown-950);
+  --color-primary-hover: var(--wt-brown-800);
+  --color-accent: var(--wt-orange-500);
+  --color-accent-hover: var(--wt-orange-400);
+  --color-border-strong: var(--wt-brown-950);
   --color-divider: var(--wt-line);
-  --color-focus: var(--wt-pine);
+  --color-focus: var(--wt-brown-950);
+  --color-focus-on-dark: var(--wt-cream-100);
+  --color-success: var(--wt-success);
+  --color-success-soft: var(--wt-success-soft);
   --color-danger: var(--wt-error);
   --color-danger-soft: var(--wt-error-soft);
 
