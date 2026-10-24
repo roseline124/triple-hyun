@@ -12,8 +12,8 @@
 로그인(현재 유저는 seed의 `u-me` 고정), 실제 결제, GPS, 길드 랭킹/연합/경매, 평판 시스템.
 
 ## 스택
-Next.js(App Router) + TypeScript + pnpm. 서버 API는 `/api/scan` 하나뿐(API 키 보호용). 나머지 데이터는 브라우저 IndexedDB(`src/lib/db.ts`)에 두고,
-첫 오픈 때 seed를 넣는다. 브라우저 데이터를 지우면 초기화된다.
+Next.js(App Router) + TypeScript + pnpm. 데이터는 서버 SQLite(libSQL, `src/lib/db.ts`)에 두고 첫 접속 때 seed를 넣는다. 브라우저는 `/api/data/*`, `/api/me/scan`으로 읽고 쓴다.
+로컬은 `local.db` 파일, Vercel은 Turso(`TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`)를 쓴다. 현재 유저가 고정이라 모든 방문자가 같은 데이터를 공유한다.
 `ANTHROPIC_API_KEY`는 서버에만 둔다(`.env.local`, 예시는 `.env.example`).
 기본 모델 `claude-sonnet-5-5`.
 
@@ -21,7 +21,7 @@ Next.js(App Router) + TypeScript + pnpm. 서버 API는 `/api/scan` 하나뿐(API
 | 담당 | 기능 | 소유 폴더 | 화면 | API |
 |---|---|---|---|---|
 | A | 1 능력 검사, 2 길드 가입, 4 길드 검색 | `src/features/scan`, `src/features/guild` | `/scan`, `/guilds`, `/guilds/[id]` | `/api/scan` |
-| B | 3 결제(더미), 5 일감 게시판, 6 신청/완료 | `src/features/wallet`, `src/features/quest` | `/wallet`, `/quests`, `/quests/[id]` | 없음 (IndexedDB) |
+| B | 3 결제(더미), 5 일감 게시판, 6 신청/완료 | `src/features/wallet`, `src/features/quest` | `/wallet`, `/quests`, `/quests/[id]` | 없음 (`/api/data/*` 읽기 공용) |
 
 공유 파일(`src/lib/*`)은 수정 전 상대에게 알린다. 타입 추가는 가능하면 append-only.
 
@@ -34,7 +34,7 @@ Next.js(App Router) + TypeScript + pnpm. 서버 API는 `/api/scan` 하나뿐(API
   `features/wallet/service.ts` 의 `debit(userId, amount, type)` / `credit(...)` 시그니처를 B가 먼저 정해 A에게 알린다.
 
 ## 구현 현황
-- [x] 뼈대, 공유 타입, seed, IndexedDB 읽기 서비스, 화면 틀
+- [x] 뼈대, 공유 타입, seed, SQLite(libSQL) 읽기 서비스, 화면 틀
 - [x] `/api/scan` + 폼(입력·로딩·오류·성공) — 실제 Claude 호출 코드는 단위 테스트(mock)만 검증됨
 - [ ] 길드 검색 필터 / 가입 (A)
 - [ ] 더미 충전, debit/credit, 거래 내역 (B)

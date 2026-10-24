@@ -13,11 +13,11 @@ export function Loadable<T>({
   empty: ReactNode;
   children: (data: T) => ReactNode;
 }) {
-  if (state.status === "loading") return <p role="status">불러오는 중…</p>;
+  if (state.status === "loading") return <p role="status">Loading…</p>;
   if (state.status === "error") {
     return (
       <p role="alert" className="error">
-        데이터를 불러오지 못했습니다. 새로고침 해주세요.
+        Couldn&apos;t load the data. Please refresh the page.
       </p>
     );
   }

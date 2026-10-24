@@ -42,13 +42,13 @@ export function ScanForm() {
   return (
     <>
       <form onSubmit={onSubmit}>
-        <label htmlFor="background">경력 / 하던 일</label>
+        <label htmlFor="background">Experience / what you do</label>
         <textarea id="background" name="background" required minLength={10} maxLength={2000} />
-        <label htmlFor="interests">관심사 (선택)</label>
+        <label htmlFor="interests">Interests (optional)</label>
         <textarea id="interests" name="interests" maxLength={500} />
         <p>
           <button type="submit" disabled={loading}>
-            {loading ? "분석 중…" : "능력 검사"}
+            {loading ? "Scanning…" : "Scan my skills"}
           </button>
         </p>
       </form>
@@ -56,14 +56,14 @@ export function ScanForm() {
       <div aria-live="polite">
         {state.status === "error" && (
           <p role="alert" className="error">
-            {state.error.message} 다시 시도해주세요.
+            {state.error.message} Please try again.
           </p>
         )}
         {state.status === "success" && (
           <>
             {!state.saved && (
               <p role="alert" className="error">
-                결과를 브라우저에 저장하지 못했습니다. 화면의 결과는 새로고침하면 사라집니다.
+                We couldn&apos;t save your results. They will disappear if you refresh this page.
               </p>
             )}
             <ScanResultView result={state.result} />
@@ -79,7 +79,7 @@ function ScanResultView({ result }: { result: ScanResult }) {
     <section aria-labelledby="scan-result">
       <h2 id="scan-result">{result.archetype}</h2>
       <p>{result.summary}</p>
-      <h3>능력치</h3>
+      <h3>Skills</h3>
       <ul>
         {result.stats.map((s) => (
           <li key={s.name}>
@@ -87,7 +87,7 @@ function ScanResultView({ result }: { result: ScanResult }) {
           </li>
         ))}
       </ul>
-      <h3>제2의 직업 후보</h3>
+      <h3>Second-career options</h3>
       <ul>
         {result.secondJobs.map((j) => (
           <li key={j.title}>
@@ -95,7 +95,7 @@ function ScanResultView({ result }: { result: ScanResult }) {
           </li>
         ))}
       </ul>
-      <p className="muted">추천 태그: {result.questTags.join(", ")}</p>
+      <p className="muted">Suggested tags: {result.questTags.join(", ")}</p>
     </section>
   );
 }

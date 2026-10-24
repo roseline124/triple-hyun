@@ -3,25 +3,25 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "길드 퀘스트",
-  description: "직업이 사라져도 길드와 함께 전직하는 플랫폼",
+  title: "Guild Quest",
+  description: "Find your next role with a guild when AI reshapes your job.",
 };
 
 const links = [
-  { href: "/scan", label: "능력 검사" },
-  { href: "/guilds", label: "길드" },
-  { href: "/quests", label: "퀘스트 게시판" },
-  { href: "/wallet", label: "지갑" },
+  { href: "/scan", label: "Skill scan" },
+  { href: "/guilds", label: "Guilds" },
+  { href: "/quests", label: "Quest board" },
+  { href: "/wallet", label: "Wallet" },
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
+    <html lang="en">
       <body>
         <header>
-          <nav aria-label="주요 메뉴">
+          <nav aria-label="Main">
             <Link href="/">
-              <strong>길드 퀘스트</strong>
+              <strong>Guild Quest</strong>
             </Link>
             {links.map((l) => (
               <Link key={l.href} href={l.href}>

@@ -3,8 +3,8 @@ import { ScanForm } from "./ScanForm";
 export default function ScanPage() {
   return (
     <>
-      <h1>나의 능력 검사</h1>
-      <p className="muted">하던 일을 적으면 AI가 몰랐던 능력과 제2의 직업을 찾아줍니다.</p>
+      <h1>Skill scan</h1>
+      <p className="muted">Describe your work and AI will surface skills you didn&apos;t know you had, plus second-career options.</p>
       <ScanForm />
     </>
   );

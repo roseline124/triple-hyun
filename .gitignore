@@ -15,4 +15,5 @@ coverage/
 playwright-report/
 test-results/
 *.tsbuildinfo
+local.db*
 next-env.d.ts
