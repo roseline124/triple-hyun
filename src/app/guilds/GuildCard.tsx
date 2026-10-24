@@ -37,6 +37,15 @@ export function GuildCard({ guild }: { guild: Guild }) {
           <strong>Looking for:</strong> {guild.lookingFor.join(", ")}
         </p>
       )}
+      {guild.tags.length > 0 && (
+        <ul aria-label="Guild tags" className="mt-3 mb-0 flex list-none flex-wrap gap-2 p-0">
+          {guild.tags.map((t) => (
+            <li key={t} className="rounded-pill bg-sand-300 px-3 py-1 text-caption font-bold text-brown-950">
+              {t}
+            </li>
+          ))}
+        </ul>
+      )}
     </li>
   );
 }
