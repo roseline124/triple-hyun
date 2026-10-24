@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept 1: Hallmark — Guild Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens: Hallmark (workshop signage: forest, saffron, stamp red) ===== */
+:root {
+  --color-paper: #F1F5F0;
+  --color-surface: #FFFFFF;
+  --color-forest: #12402B;      /* ink, borders, primary */
+  --color-forest-soft: #D5E8DB;
+  --color-saffron: #F5B724;     /* signage, reward */
+  --color-saffron-soft: #FDEBB8;
+  --color-stamp: #C73A22;       /* verification seal only */
+  --color-muted: #476152;
+  --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --border: 2px solid var(--color-forest);
+  --radius: 14px;
+  --shadow-hard: 4px 4px 0 var(--color-forest);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-paper); color: var(--color-forest); font: 17px/1.55 var(--font-body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--color-stamp); outline-offset: 3px; }
+.wrap { max-width: 68rem; margin: 0 auto; padding: 0 1.25rem; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: 1.05; letter-spacing: -.02em; }
+.muted { color: var(--color-muted); }
+
+header.top { border-bottom: var(--border); background: var(--color-surface); }
+header.top .wrap { display: flex; align-items: center; gap: 1.5rem; padding-block: .8rem; flex-wrap: wrap; }
+.brand { font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; text-decoration: none; display: flex; align-items: center; gap: .55rem; }
+nav { display: flex; gap: .35rem; flex: 1; white-space: nowrap; }
+nav a { padding: .35rem .8rem; border-radius: 999px; text-decoration: none; font-weight: 500; border: 2px solid transparent; }
+nav a:hover { border-color: var(--color-forest); }
+nav a[aria-current="page"] { background: var(--color-forest); color: #fff; }
+.wallet { font-weight: 600; border: var(--border); border-radius: 999px; padding: .2rem .85rem; background: var(--color-saffron-soft); }
+
+.sign { margin-block: 2rem 1.5rem; background: var(--color-saffron); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow-hard); display: grid; grid-template-columns: 1fr auto; gap: 2rem; padding: 2rem 2.25rem; align-items: center; position: relative; }
+.sign h1 { font-weight: 800; font-size: clamp(2.4rem, 6vw, 4.4rem); max-width: 11ch; }
+.sign p { margin: 1rem 0 1.4rem; max-width: 34rem; font-size: 1.1rem; }
+.stamp { width: 190px; height: 190px; transform: rotate(-7deg); flex: none; }
+.btn { font: inherit; font-weight: 600; background: var(--color-forest); color: #fff; border: var(--border); border-radius: 999px; padding: .75rem 1.6rem; cursor: pointer; box-shadow: 3px 3px 0 var(--color-surface); }
+.btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--color-surface); }
+.btn.small { background: var(--color-surface); color: var(--color-forest); padding: .4rem 1.1rem; box-shadow: none; }
+.btn.small:hover { background: var(--color-forest-soft); transform: none; }
+.fee { margin-left: .9rem; font-weight: 500; }
+
+.record { font-family: var(--font-display); font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.3; letter-spacing: -.01em; max-width: 46rem; margin: 0 0 2.25rem; font-weight: 600; }
+.record b { font-weight: 800; background: linear-gradient(transparent 62%, var(--color-saffron) 62%); }
+
+.cols { display: grid; grid-template-columns: 1fr 19rem; gap: 2rem; align-items: start; padding-bottom: 4rem; }
+h2 { font-size: 1.6rem; margin-bottom: 1rem; }
+.ticket { background: var(--color-surface); border: var(--border); border-radius: var(--radius); padding: 1.1rem 1.3rem; margin-bottom: 1rem; display: grid; grid-template-columns: 1fr auto; gap: .6rem 1rem; box-shadow: var(--shadow-hard); }
+.ticket h3 { font-size: 1.25rem; line-height: 1.2; }
+.facts { list-style: none; padding: 0; margin: .35rem 0 0; display: flex; flex-wrap: wrap; font-size: .95rem; color: var(--color-muted); }
+.facts li + li { margin-left: .8rem; padding-left: .8rem; border-left: 2px solid var(--color-forest-soft); }
+.reward { font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; background: var(--color-saffron-soft); border: var(--border); border-radius: 10px; padding: .1rem .7rem; height: fit-content; }
+.ticket .foot { grid-column: 1 / -1; display: flex; align-items: center; gap: .9rem; }
+.crew { background: var(--color-forest); color: #fff; border-radius: var(--radius); padding: 1.25rem; }
+.crew h2 { font-size: 1.3rem; }
+.member { display: flex; align-items: center; gap: .75rem; padding: .5rem 0; border-top: 1px solid rgba(255,255,255,.25); }
+.member:first-of-type { border-top: 0; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--color-saffron); color: var(--color-forest); display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; }
+.member small { display: block; color: #CFE3D6; line-height: 1.3; }
+.note { margin: 0 0 2rem; font-size: .85rem; color: var(--color-muted); border: 2px dashed var(--color-forest-soft); border-radius: 10px; padding: .6rem .9rem; }
+
+@media (max-width: 760px) {
+  .sign { grid-template-columns: 1fr; padding: 1.5rem 1.25rem; }
+  .stamp { position: absolute; top: -26px; right: 8px; width: 96px; height: 96px; }
+  .cols { grid-template-columns: 1fr; }
+  .fee { display: block; margin: .6rem 0 0; }
+  .facts { gap: 0 1rem; }
+  .facts li + li { margin-left: 0; padding-left: 0; border-left: 0; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="emblem" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="5"/>
+      <path d="M50 18 L82 74 H18 Z" fill="currentColor"/>
+      <path d="M50 44 L66 72 H34 Z" fill="var(--emblem-cut, #F5B724)"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#"><svg width="30" height="30" aria-hidden="true"><use href="#emblem"/></svg>Guild Quest</a>
+    <nav aria-label="Main">
+      <a href="#">Skill scan</a>
+      <a href="#" aria-current="page">Guilds</a>
+      <a href="#">Quest board</a>
+    </nav>
+    <span class="wallet" aria-label="Wallet balance">$1,240 credits</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="sign" aria-labelledby="g-name">
+    <div>
+      <h1 id="g-name">Northwind Platform Guild</h1>
+      <p>Ex-DevOps and backend engineers who take on infrastructure cleanups together, and look out for each other between gigs.</p>
+      <button class="btn" type="button">Join the guild</button><span class="fee">$40 one-time fee</span>
+    </div>
+    <svg class="stamp" viewBox="0 0 200 200" role="img" aria-label="Verified guild seal">
+      <defs><path id="ring" d="M100 100 m-74 0 a74 74 0 1 1 148 0 a74 74 0 1 1 -148 0"/></defs>
+      <circle cx="100" cy="100" r="94" fill="#fff" stroke="#C73A22" stroke-width="5"/>
+      <circle cx="100" cy="100" r="58" fill="none" stroke="#C73A22" stroke-width="2.5"/>
+      <text font-family="Bricolage Grotesque, Arial, sans-serif" font-weight="800" font-size="19" fill="#C73A22"><textPath href="#ring" startOffset="0" textLength="458" lengthAdjust="spacing">Verified&#160;guild&#160;&#160;&#160;Verified&#160;guild&#160;&#160;&#160;</textPath></text>
+      <g transform="translate(66 66)" style="color:#C73A22;--emblem-cut:#fff"><svg width="68" height="68" viewBox="0 0 100 100"><use href="#emblem"/></svg></g>
+    </svg>
+  </section>
+
+  <p class="record"><b>24 members</b> have finished <b>57 quests</b> together. Clients rate them <b>4.8 out of 5</b>, and the median payout lands in <b>2 days</b>.</p>
+
+  <div class="cols">
+    <section aria-labelledby="open-quests">
+      <h2 id="open-quests">Open quests</h2>
+      <article class="ticket">
+        <div><h3>Migrate CI from Jenkins to GitHub Actions</h3>
+          <ul class="facts"><li>Remote</li><li>About 2 weeks</li><li>2 people needed</li></ul></div>
+        <span class="reward">$3,200</span>
+        <div class="foot"><button class="btn small" type="button">Apply</button><span class="muted">Posted 2 days ago</span></div>
+      </article>
+      <article class="ticket">
+        <div><h3>Terraform audit for a 40-service stack</h3>
+          <ul class="facts"><li>Remote</li><li>About 1 week</li><li>1 person needed</li></ul></div>
+        <span class="reward">$1,800</span>
+        <div class="foot"><button class="btn small" type="button">Apply</button><span class="muted">Posted 5 days ago</span></div>
+      </article>
+      <article class="ticket">
+        <div><h3>On-call runbook rewrite</h3>
+          <ul class="facts"><li>Remote</li><li>About 3 days</li><li>1 person needed</li></ul></div>
+        <span class="reward">$900</span>
+        <div class="foot"><button class="btn small" type="button">Apply</button><span class="muted">Posted today</span></div>
+      </article>
+    </section>
+
+    <aside class="crew" aria-labelledby="crew-h">
+      <h2 id="crew-h">Who you'd work with</h2>
+      <div class="member"><span class="avatar" aria-hidden="true">M</span><div>Maya K.<small>Guild lead, site reliability</small></div></div>
+      <div class="member"><span class="avatar" aria-hidden="true">D</span><div>Daniel R.<small>Backend, Go</small></div></div>
+      <div class="member"><span class="avatar" aria-hidden="true">S</span><div>Sofia P.<small>Platform, Kubernetes</small></div></div>
+    </aside>
+  </div>
+  <p class="note">Design preview with sample data. These guilds, people, and numbers are made up.</p>
+</main>
+</body>
+</html>
