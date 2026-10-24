@@ -39,6 +39,11 @@ export type Guild = {
   ownerId: string;
   memberIds: string[];
   joinFee: number;
+  /** 모집 중 여부. owner 가 토글한다. */
+  recruiting: boolean;
+  maxMembers: number;
+  /** 찾는 역할(0~3개). */
+  lookingFor: string[];
 };
 
 export type Quest = {

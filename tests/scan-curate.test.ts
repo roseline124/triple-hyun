@@ -12,6 +12,9 @@ const guild = (id: string, tags: string[]): Guild => ({
   ownerId: "u",
   memberIds: [],
   joinFee: 1,
+  recruiting: true,
+  maxMembers: 20,
+  lookingFor: [],
 });
 const quest = (id: string, tags: string[], status: Quest["status"] = "open"): Quest => ({
   id,
