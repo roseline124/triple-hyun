@@ -1,0 +1,29 @@
+[
+  {
+    "skill": "agency-business-strategist",
+    "source": "msitarzewski/agency-agents",
+    "commit": "4e3ac3ca6604c75113f52c695dbddcc7af928b46",
+    "path": "specialized/business-strategist.md",
+    "sha256": "9314906805d8dee81c3e2d10cb93513a391731d9fceb2e4c936257005a144b92",
+    "license": "MIT",
+    "adaptation": "Project-local wrapper; original prompt preserved in references/upstream.md"
+  },
+  {
+    "skill": "agency-proposal-strategist",
+    "source": "msitarzewski/agency-agents",
+    "commit": "4e3ac3ca6604c75113f52c695dbddcc7af928b46",
+    "path": "sales/sales-proposal-strategist.md",
+    "sha256": "84c42e0ae7e11e6b239b7f921bdb0c33398102f94998c2eaa41114a3a46dc4c9",
+    "license": "MIT",
+    "adaptation": "Project-local wrapper; original prompt preserved in references/upstream.md"
+  },
+  {
+    "skill": "agency-visual-storyteller",
+    "source": "msitarzewski/agency-agents",
+    "commit": "4e3ac3ca6604c75113f52c695dbddcc7af928b46",
+    "path": "design/design-visual-storyteller.md",
+    "sha256": "f4950c9d65b5d105ec48ebce4b7621154e3bf89871dbbf07af245476930eb4dd",
+    "license": "MIT",
+    "adaptation": "Project-local wrapper; original prompt preserved in references/upstream.md"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "name": "ambition-hackathon-tools",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.33.3",
+  "private": true,
+  "description": "Product-independent local browser and mobile verification tools",
+  "scripts": {
+    "doctor": "node ../scripts/doctor.mjs",
+    "smoke": "node ../scripts/smoke-tools.mjs",
+    "smoke:docs": "node ../scripts/smoke-docs.mjs",
+    "browser": "agent-browser",
+    "device": "agent-device"
+  },
+  "engines": { "node": ">=22.12.0" },
+  "pnpm": {
+    "overrides": { "image-size": "2.0.4" },
+    "onlyBuiltDependencies": ["node", "agent-browser"]
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "agent-browser": "0.39.2",
+    "agent-device": "0.21.31",
+    "docx": "9.14.0",
+    "node": "24.22.1",
+    "pptxgenjs": "4.0.0"
+  }
+}
