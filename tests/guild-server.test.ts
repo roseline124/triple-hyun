@@ -2,6 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { ApiFailure } from "@/lib/api";
 import { closeDb, getAll, getOne, putOne } from "@/lib/db";
 import { ensureProfile, MAX_FAILED_ATTEMPTS, ProfileError } from "@/features/scan/profile";
 import { createGuild, GuildError, joinGuild, leaveGuild, setRecruiting } from "@/features/guild/server";
@@ -31,7 +32,7 @@ afterEach(async () => {
 const code = (p: Promise<unknown>) =>
   p.then(
     () => "ok",
-    (e) => (e instanceof GuildError || e instanceof ProfileError ? e.code : `other:${String(e)}`),
+    (e) => (e instanceof GuildError || e instanceof ProfileError || e instanceof ApiFailure ? e.code : `other:${String(e)}`),
   );
 const guildOf = (id: string) => getOne<Guild>("guilds", id).then((g) => g!);
 const walletOf = (id: string) => getOne<Wallet>("wallets", id);
@@ -56,7 +57,7 @@ describe("joinGuild", () => {
     expect((await guildOf("g-1")).memberIds).toContain("maya");
     expect(await walletOf("maya")).toEqual({ userId: "maya", balance: STARTING_CREDIT_USD - JOIN_FEE_USD });
     expect(await txs()).toEqual([
-      expect.objectContaining({ userId: "maya", type: "guild_fee", amount: -JOIN_FEE_USD, createdAt: t0.toISOString() }),
+      expect.objectContaining({ userId: "maya", type: "guild_fee", amount: -JOIN_FEE_USD, ref: "g-1" }),
     ]);
   });
 

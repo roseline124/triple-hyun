@@ -61,11 +61,14 @@ export type Quest = {
 };
 
 export type WalletTxType = "charge" | "guild_fee" | "quest_reward";
+/** amount 는 부호가 있다. 충전·보상은 양수, 가입비 같은 차감은 음수. */
 export type WalletTx = {
   id: string;
   userId: string;
   type: WalletTxType;
   amount: number;
   createdAt: string;
+  /** 관련 퀘스트·길드 id */
+  ref?: string;
 };
 export type Wallet = { userId: string; balance: number };

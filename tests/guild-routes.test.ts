@@ -90,7 +90,7 @@ describe("POST /api/guilds/[id]/join", () => {
     await putOne("wallets", { userId: "sam", balance: 10 });
     const poor = await joinPost(post(sam), ctx("g-1"));
     expect(poor.status).toBe(402);
-    expect((await poor.json()).error).toEqual({ code: "insufficient_funds", message: "Not enough credits. Join fee is $35." });
+    expect((await poor.json()).error).toEqual({ code: "insufficient_funds", message: "You don't have enough credits. Add credits and try again." });
   });
 
   it("never includes the PIN hash or salt in a response", async () => {

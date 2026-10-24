@@ -23,7 +23,7 @@ UI는 `docs/design/DESIGN-BIBLE.md`를 따르고 화면 문구는 영어다. 사
 ### 지갑 (프로필 귀속, B의 `wallet`과 계약 필요)
 - `wallets`의 키 `userId`에 프로필 id를 쓴다. 지갑이 없는 프로필은 첫 가입 시점에 **시작 크레딧 $100**으로 지갑을 만든다(더미, `STARTING_CREDIT_USD`).
 - 가입 transaction 안에서 잔액 확인 → 차감 → `WalletTx { type: "guild_fee", amount: -35 }` 기록 → `memberIds` 추가를 한꺼번에 한다. 하나라도 실패하면 아무것도 바뀌지 않는다.
-- B가 만드는 `debit(userId, amount, type)`과 같은 transaction을 공유해야 한다. B의 시그니처가 정해질 때까지 A는 `server.ts` 안에서 같은 테이블을 직접 갱신하고, B 구현 후 `debit` 호출로 바꾼다.
+- 가입비는 B의 `features/wallet/ledger.ts` `debit(tx, userId, amount, "guild_fee", guildId)`로 차감하고, 지갑 생성(시작 크레딧)만 A가 한다. 트랜잭션은 `lib/db.ts`의 `withTransaction`을 공유한다.
 
 ## 3. 데이터
 ### `Guild` 타입 확장 (`src/lib/types.ts`, 공유 파일 → B에게 알림, 추가만)
@@ -58,7 +58,7 @@ type Guild = {
 1. 길드 존재(`not_found`)
 2. 이미 어떤 길드의 멤버인가(`already_member`, 같은 길드든 다른 길드든)
 3. `recruiting === false`면 `closed`, 정원이 찼으면 `full`
-4. 잔액이 가입비보다 적으면 `insufficient_funds`
+4. 잔액이 가입비보다 적으면 B의 `debit`이 `insufficient_funds`(402)로 거절한다
 5. 지갑 차감 + 거래 기록 + `memberIds`에 프로필 id 추가
 
 2~5는 transaction 안에서 읽고 쓴다. 마지막 한 자리를 두 사람이 동시에 가입해도 정원을 넘지 않아야 한다.
@@ -84,7 +84,7 @@ type Guild = {
 | `POST /api/guilds/[id]/recruiting` | credentials + `{ recruiting: boolean }` | `Guild` |
 
 오류 코드: `invalid_input`(400), `invalid_credentials`(401, "Nickname or PIN doesn't match."), `locked`(429),
-`not_found`(404), `already_member`(409, "You're already in a guild. Leave it first."), `insufficient_funds`(402, "Not enough credits. Join fee is $35."), `closed`(409, "This guild isn't recruiting."),
+`not_found`(404), `already_member`(409, "You're already in a guild. Leave it first."), `insufficient_funds`(402, B의 원장 문구 "You don't have enough credits. Add credits and try again."), `closed`(409, "This guild isn't recruiting."),
 `full`(409, "This guild is full."), `name_taken`(409, "A guild with that name already exists."), `not_member`(409),
 `owner_cannot_leave`(409), `forbidden`(403), `internal`(500).
 

@@ -1,4 +1,4 @@
-import { createClient, type Client } from "@libsql/client";
+import { createClient, type Client, type Transaction } from "@libsql/client";
 import { seedGuilds, seedQuests, seedTxs, seedUsers, seedWallets } from "./seed";
 
 /**
@@ -75,6 +75,22 @@ export async function closeDb(): Promise<void> {
   if (p) (await p.catch(() => null))?.close();
 }
 
+type Executor = Pick<Client | Transaction, "execute">;
+
+async function readOne<T>(ex: Executor, store: StoreName, key: string): Promise<T | undefined> {
+  const rs = await ex.execute({ sql: `SELECT data FROM ${store} WHERE id = ?`, args: [key] });
+  const row = rs.rows[0];
+  return row ? (JSON.parse(String(row.data)) as T) : undefined;
+}
+
+async function writeOne<T extends object>(ex: Executor, store: StoreName, value: T): Promise<void> {
+  const id = String((value as Record<string, unknown>)[KEY_FIELDS[store]]);
+  await ex.execute({
+    sql: `INSERT INTO ${store} (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data`,
+    args: [id, JSON.stringify(value)],
+  });
+}
+
 export async function getAll<T>(store: StoreName): Promise<T[]> {
   const db = await getDb();
   const rs = await db.execute(`SELECT data FROM ${store} ORDER BY rowid`);
@@ -82,20 +98,34 @@ export async function getAll<T>(store: StoreName): Promise<T[]> {
 }
 
 export async function getOne<T>(store: StoreName, key: string): Promise<T | undefined> {
-  const db = await getDb();
-  const rs = await db.execute({ sql: `SELECT data FROM ${store} WHERE id = ?`, args: [key] });
-  const row = rs.rows[0];
-  return row ? (JSON.parse(String(row.data)) as T) : undefined;
+  return readOne<T>(await getDb(), store, key);
 }
 
 export async function putOne<T extends object>(store: StoreName, value: T): Promise<void> {
-  const db = await getDb();
-  const id = String((value as Record<string, unknown>)[KEY_FIELDS[store]]);
-  await db.execute({
-    sql: `INSERT INTO ${store} (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data`,
-    args: [id, JSON.stringify(value)],
-  });
+  await writeOne(await getDb(), store, value);
 }
+
+/**
+ * 여러 store 를 바꾸는 작업을 write 트랜잭션 하나로 실행한다. fn 이 throw 하면 롤백한다.
+ * fn 안에서는 getOne/putOne 대신 txGetOne/txPutOne 만 쓴다(같은 연결에서 검사와 쓰기를 해야 한다).
+ */
+export async function withTransaction<T>(fn: (tx: Transaction) => Promise<T>): Promise<T> {
+  const tx = await (await getDb()).transaction("write");
+  try {
+    const result = await fn(tx);
+    await tx.commit();
+    return result;
+  } catch (e) {
+    await tx.rollback().catch(() => {});
+    throw e;
+  } finally {
+    tx.close();
+  }
+}
+
+export const txGetOne = <T>(tx: Transaction, store: StoreName, key: string) => readOne<T>(tx, store, key);
+export const txPutOne = <T extends object>(tx: Transaction, store: StoreName, value: T) =>
+  writeOne(tx, store, value);
 
 export function isStoreName(name: string): name is StoreName {
   return name in KEY_FIELDS;

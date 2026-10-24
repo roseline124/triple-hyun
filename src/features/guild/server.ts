@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import type { Transaction } from "@libsql/client";
-import { getDb } from "@/lib/db";
-import type { Guild, Wallet, WalletTx } from "@/lib/types";
+import { txGetOne, txPutOne, withTransaction } from "@/lib/db";
+import type { Guild, Wallet } from "@/lib/types";
+import { debit } from "@/features/wallet/ledger";
 import { checkCredentials, ensureProfile, ProfileError } from "@/features/scan/profile";
 import type { Credentials } from "@/features/scan/schema";
 import { normalizeGuildName, recruitStatus, withDefaults } from "./rules";
@@ -16,7 +17,6 @@ export type GuildErrorCode =
   | "already_member"
   | "closed"
   | "full"
-  | "insufficient_funds"
   | "name_taken"
   | "not_member"
   | "owner_cannot_leave"
@@ -27,7 +27,6 @@ const MESSAGES: Record<GuildErrorCode, string> = {
   already_member: "You're already in a guild. Leave it first.",
   closed: "This guild isn't recruiting.",
   full: "This guild is full.",
-  insufficient_funds: `Not enough credits. Join fee is $${JOIN_FEE_USD}.`,
   name_taken: "A guild with that name already exists.",
   not_member: "You're not a member of this guild.",
   owner_cannot_leave: "Guild owners can't leave yet.",
@@ -47,20 +46,6 @@ async function requireProfile(credentials: Credentials, now: Date) {
   return profile;
 }
 
-async function inTransaction<T>(fn: (tx: Transaction) => Promise<T>): Promise<T> {
-  const tx = await (await getDb()).transaction("write");
-  try {
-    const result = await fn(tx);
-    await tx.commit();
-    return result;
-  } catch (e) {
-    await tx.rollback();
-    throw e;
-  } finally {
-    tx.close();
-  }
-}
-
 async function readGuilds(tx: Transaction): Promise<Guild[]> {
   const rs = await tx.execute("SELECT data FROM guilds ORDER BY rowid");
   return rs.rows.map((r) => withDefaults(JSON.parse(String(r.data)) as Guild));
@@ -77,7 +62,7 @@ const inAnyGuild = (guilds: Guild[], profileId: string) => guilds.some((g) => g.
 export async function joinGuild(credentials: Credentials, guildId: string, now: Date = new Date()): Promise<Guild> {
   // 프로필이 없으면 입력한 닉네임+PIN으로 새로 만든다. 있으면 PIN을 검증한다.
   const profile = await ensureProfile(credentials, now);
-  return inTransaction(async (tx) => {
+  return withTransaction(async (tx) => {
     const guilds = await readGuilds(tx);
     const guild = guilds.find((g) => g.id === guildId);
     if (!guild) throw new GuildError("not_found");
@@ -85,24 +70,12 @@ export async function joinGuild(credentials: Credentials, guildId: string, now: 
     const status = recruitStatus(guild);
     if (status !== "recruiting") throw new GuildError(status);
 
-    const row = await tx.execute({ sql: "SELECT data FROM wallets WHERE id = ?", args: [profile.id] });
-    const balance = row.rows[0] ? (JSON.parse(String(row.rows[0].data)) as Wallet).balance : STARTING_CREDIT_USD;
-    if (balance < guild.joinFee) throw new GuildError("insufficient_funds");
-
-    const wallet: Wallet = { userId: profile.id, balance: balance - guild.joinFee };
-    const feeTx: WalletTx = {
-      id: `tx-${randomUUID().slice(0, 8)}`,
-      userId: profile.id,
-      type: "guild_fee",
-      amount: -guild.joinFee,
-      createdAt: now.toISOString(),
-    };
+    // 지갑이 없는 프로필은 첫 가입 때 시작 크레딧으로 만든다. 가입비는 B의 원장으로 차감한다(잔액 부족이면 402).
+    if (!(await txGetOne<Wallet>(tx, "wallets", profile.id))) {
+      await txPutOne<Wallet>(tx, "wallets", { userId: profile.id, balance: STARTING_CREDIT_USD });
+    }
+    await debit(tx, profile.id, guild.joinFee, "guild_fee", guild.id);
     const joined: Guild = { ...guild, memberIds: [...guild.memberIds, profile.id] };
-    await tx.execute({
-      sql: "INSERT INTO wallets (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data",
-      args: [wallet.userId, JSON.stringify(wallet)],
-    });
-    await tx.execute({ sql: "INSERT INTO txs (id, data) VALUES (?, ?)", args: [feeTx.id, JSON.stringify(feeTx)] });
     await saveGuild(tx, joined);
     return joined;
   });
@@ -110,7 +83,7 @@ export async function joinGuild(credentials: Credentials, guildId: string, now: 
 
 export async function leaveGuild(credentials: Credentials, guildId: string, now: Date = new Date()): Promise<Guild> {
   const profile = await requireProfile(credentials, now);
-  return inTransaction(async (tx) => {
+  return withTransaction(async (tx) => {
     const guild = (await readGuilds(tx)).find((g) => g.id === guildId);
     if (!guild) throw new GuildError("not_found");
     if (!guild.memberIds.includes(profile.id)) throw new GuildError("not_member");
@@ -125,7 +98,7 @@ export async function createGuild(input: CreateGuildInput, now: Date = new Date(
   const { nickname, pin, name, region, description, tags, maxMembers, lookingFor } = input;
   // 길드를 만들 때는 프로필이 없으면 닉네임+PIN으로 새로 만든다. 있으면 PIN을 검증한다.
   const profile = await ensureProfile({ nickname, pin }, now);
-  return inTransaction(async (tx) => {
+  return withTransaction(async (tx) => {
     const guilds = await readGuilds(tx);
     if (inAnyGuild(guilds, profile.id)) throw new GuildError("already_member");
     const key = normalizeGuildName(name);
@@ -155,7 +128,7 @@ export async function setRecruiting(
   now: Date = new Date(),
 ): Promise<Guild> {
   const profile = await requireProfile(credentials, now);
-  return inTransaction(async (tx) => {
+  return withTransaction(async (tx) => {
     const guild = (await readGuilds(tx)).find((g) => g.id === guildId);
     if (!guild) throw new GuildError("not_found");
     if (guild.ownerId !== profile.id) throw new GuildError("forbidden");

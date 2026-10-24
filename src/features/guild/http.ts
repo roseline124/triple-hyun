@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import { fail, ok } from "@/lib/api";
+import { fail, failFrom, ok } from "@/lib/api";
 import { credentialFailure } from "@/features/scan/http";
 import { ProfileError } from "@/features/scan/profile";
 import type { Guild } from "@/lib/types";
@@ -8,7 +8,6 @@ import { GuildError, type GuildErrorCode } from "./server";
 const STATUS: Record<GuildErrorCode, number> = {
   not_found: 404,
   forbidden: 403,
-  insufficient_funds: 402,
   already_member: 409,
   closed: 409,
   full: 409,
@@ -33,6 +32,6 @@ export async function guildRoute<S extends z.ZodType>(
   } catch (e) {
     if (e instanceof ProfileError) return credentialFailure(e, e.message);
     if (e instanceof GuildError) return fail(e.code, e.message, STATUS[e.code]);
-    return fail("internal", "Something went wrong. Try again.", 500);
+    return failFrom(e, "Something went wrong. Try again.");
   }
 }
