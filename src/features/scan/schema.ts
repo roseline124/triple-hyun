@@ -86,10 +86,20 @@ export type ScanInputRecord = {
   answers: Answer[];
 };
 
+/** /api/profile/tags 요청. 태그는 서버가 허용 목록(검사 태그 ∪ 길드·일감 태그)으로 다시 검증한다. */
+export const TagsInputSchema = CredentialsSchema.extend({
+  tags: z
+    .array(z.string().trim().min(1).max(30))
+    .min(1, "Keep at least one tag.")
+    .max(6, "Pick up to 6 tags."),
+});
+
 /** /api/profile/lookup 응답. pinHash 등 내부 필드는 포함하지 않는다. */
 export type ProfileView = {
   nickname: string;
   scan: z.infer<typeof ScanResultSchema> | null;
+  /** 사용자가 고른 태그. null 이면 아직 고르지 않아 `scan.tags` 를 쓴다. */
+  curatedTags: string[] | null;
   scanInput: ScanInputRecord | null;
   updatedAt: string;
 };

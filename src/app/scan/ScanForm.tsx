@@ -107,7 +107,7 @@ export function ScanForm() {
               <Link href="/scan/lookup">look them up later</Link>.
             </p>
           </div>
-          <ScanResultView result={flow.result} />
+          <ScanResultView result={flow.result} credentials={{ nickname: form.nickname, pin: form.pin }} />
           <p className="mt-6">
             <button type="button" className={outlineButton} onClick={() => dispatch({ type: "reset" })}>
               Scan again

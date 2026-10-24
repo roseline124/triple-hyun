@@ -6,6 +6,7 @@ vi.mock("@/features/scan/service", async (importOriginal) => {
 });
 
 import { POST as lookupPost } from "@/app/api/profile/lookup/route";
+import { POST as tagsPost } from "@/app/api/profile/tags/route";
 import { POST as questionsPost } from "@/app/api/scan/questions/route";
 import { POST as scanPost } from "@/app/api/scan/route";
 import { MAX_FAILED_ATTEMPTS, type Profile } from "@/features/scan/profile";
@@ -224,5 +225,58 @@ describe("POST /api/profile/lookup", () => {
     const res = await lookupPost(post(creds));
     expect(res.status).toBe(429);
     expect((await res.json()).error.message).toMatch(/15 minutes/);
+  });
+});
+
+describe("POST /api/profile/tags", () => {
+  async function scanned() {
+    vi.mocked(runScan).mockResolvedValue(result);
+    await scanPost(post({ ...content, answers: [] }));
+  }
+
+  it("saves my picks in the catalog's spelling and returns them on the next lookup", async () => {
+    await scanned();
+    const res = await tagsPost(post({ ...creds, tags: ["technical writing", "developer  content"] }));
+    expect(res.status).toBe(200);
+    expect((await res.json()).data.tags).toEqual(["Technical writing", "Developer content"]);
+    const { data } = await (await lookupPost(post(creds))).json();
+    expect(data.curatedTags).toEqual(["Technical writing", "Developer content"]);
+    expect(data.scan.tags).toEqual(result.tags);
+  });
+
+  it("starts with no picks and clears them when the profile scans again", async () => {
+    await scanned();
+    expect((await (await lookupPost(post(creds))).json()).data.curatedTags).toBeNull();
+    await tagsPost(post({ ...creds, tags: ["Developer content"] }));
+    await scanPost(post({ ...content, answers: [] }));
+    expect((await stored())?.curatedTags).toBeNull();
+  });
+
+  it.each([
+    ["malformed JSON", "not json"],
+    ["no tags", { ...creds, tags: [] }],
+    ["more than 6 tags", { ...creds, tags: ["a", "b", "c", "d", "e", "f", "g"] }],
+    ["a bad PIN", { ...creds, pin: "12", tags: ["Developer content"] }],
+  ])("400 on %s", async (_name, body) => {
+    expect((await tagsPost(post(body))).status).toBe(400);
+  });
+
+  it("400 and saves nothing for a tag outside my scan and the catalog", async () => {
+    await scanned();
+    const res = await tagsPost(post({ ...creds, tags: ["Developer content", "Made-up tag"] }));
+    expect(res.status).toBe(400);
+    expect((await stored())?.curatedTags).toBeNull();
+  });
+
+  it("401 for a wrong PIN or unknown nickname, and 409 before a scan finishes", async () => {
+    await scanned();
+    expect((await tagsPost(post({ ...creds, pin: "0000", tags: ["Developer content"] }))).status).toBe(401);
+    expect((await tagsPost(post({ nickname: "Nobody", pin: "1234", tags: ["Developer content"] }))).status).toBe(401);
+
+    vi.mocked(runScan).mockRejectedValueOnce(new ScanError("upstream", "x"));
+    await scanPost(post({ ...content, nickname: "Jordan", answers: [] }));
+    const res = await tagsPost(post({ nickname: "Jordan", pin: "1234", tags: ["Developer content"] }));
+    expect(res.status).toBe(409);
+    expect((await res.json()).error.code).toBe("no_scan");
   });
 });

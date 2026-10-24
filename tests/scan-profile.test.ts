@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { closeDb, getOne } from "@/lib/db";
+import { closeDb, getOne, putOne } from "@/lib/db";
 import {
   LOCK_MS,
   MAX_FAILED_ATTEMPTS,
@@ -9,6 +9,7 @@ import {
   ensureProfile,
   lookupProfile,
   normalizeNickname,
+  saveCuratedTags,
   saveScanResult,
   type Profile,
 } from "@/features/scan/profile";
@@ -143,6 +144,7 @@ describe("saveScanResult and lookupProfile", () => {
     expect(view).toEqual({
       nickname: "Maya",
       scan,
+      curatedTags: null,
       scanInput,
       updatedAt: new Date(t0.getTime() + 5000).toISOString(),
     });
@@ -151,7 +153,26 @@ describe("saveScanResult and lookupProfile", () => {
   it("never includes the PIN hash, salt, or lock fields in the lookup view", async () => {
     await ensureProfile(maya, t0);
     const view = await lookupProfile(maya, t0);
-    expect(Object.keys(view).sort()).toEqual(["nickname", "scan", "scanInput", "updatedAt"]);
+    expect(Object.keys(view).sort()).toEqual(["curatedTags", "nickname", "scan", "scanInput", "updatedAt"]);
+  });
+
+  it("saves picked tags without touching the AI tags, and a new scan clears them", async () => {
+    const p = await ensureProfile(maya, t0);
+    await saveScanResult(p, scan, scanInput, t0);
+    await saveCuratedTags((await stored("maya")) as Profile, ["Developer content"], t0);
+    const view = await lookupProfile(maya, t0);
+    expect(view.curatedTags).toEqual(["Developer content"]);
+    expect(view.scan?.tags).toEqual(scan.tags);
+    await saveScanResult((await stored("maya")) as Profile, scan, scanInput, t0);
+    expect((await lookupProfile(maya, t0)).curatedTags).toBeNull();
+  });
+
+  it("reads profiles saved before tag picking existed as having no picks", async () => {
+    const p = await ensureProfile(maya, t0);
+    const legacy: Partial<Profile> = { ...p, scan };
+    delete legacy.curatedTags;
+    await putOne("profiles", legacy);
+    expect((await lookupProfile(maya, t0)).curatedTags).toBeNull();
   });
 
   it("returns scan null for a profile that has not finished a scan", async () => {
