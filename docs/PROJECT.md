@@ -24,7 +24,7 @@ Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design
 | 담당 | 기능 | 소유 폴더 | 화면 | API |
 |---|---|---|---|---|
 | A | 1 능력 검사, 2 길드 가입, 4 길드 검색 | `src/features/scan`, `src/features/guild` | `/scan`, `/guilds`, `/guilds/[id]` | `/api/scan` |
-| B | 3 결제(더미), 5 일감 게시판, 6 신청/완료 | `src/features/wallet`, `src/features/quest` | `/wallet`, `/quests`, `/quests/[id]` | 없음 (`/api/data/*` 읽기 공용) |
+| B | 3 결제(더미), 5 일감 게시판, 6 신청/완료 | `src/features/wallet`, `src/features/quest` | `/wallet`, `/quests`, `/quests/[id]` | `/api/me/wallet/charge`, `/api/me/transactions`, `/api/quests/[id]/*` |
 
 공유 파일(`src/lib/*`)은 수정 전 상대에게 알린다. 타입 추가는 가능하면 append-only.
 
@@ -34,14 +34,16 @@ Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design
 - 미구현 기능은 화면에 배너로 표시한다. 가짜 성공을 만들지 않는다.
 - 여러 store 를 바꾸는 변경(가입비 차감 등)은 `getDb()` 의 단일 transaction 으로 처리한다.
 - 교차 의존: 길드 가입(A)은 `wallet` 차감, 작업 완료(B)는 `wallet` 지급을 쓴다.
-  `features/wallet/service.ts` 의 `debit(userId, amount, type)` / `credit(...)` 시그니처를 B가 먼저 정해 A에게 알린다.
+  서버 전용 `features/wallet/ledger.ts` 의 `debit(tx, userId, amount, type, ref?)` / `credit(...)` 를 쓴다.
+  `tx` 는 `withTransaction`(`src/lib/db.ts`)이 넘겨주는 트랜잭션이고, 그 안에서는 `txGetOne`/`txPutOne` 만 쓴다.
+  잔액 부족은 `ApiFailure("insufficient_funds", …, 402)` 를 throw 하고 route 는 `failFrom` 으로 응답한다.
 
 ## 구현 현황
 - [x] 뼈대, 공유 타입, seed, SQLite(libSQL) 읽기 서비스, 화면 틀
 - [x] `/api/scan` + 폼(입력·로딩·오류·성공) — 실제 Claude 호출 코드는 단위 테스트(mock)만 검증됨
 - [ ] 길드 검색 필터 / 가입 (A)
-- [ ] 더미 충전, debit/credit, 거래 내역 (B)
-- [ ] 퀘스트 검색 / 신청 / 완료 (B)
+- [x] 더미 충전, debit/credit, 거래 내역 (B) — `POST /api/me/wallet/charge`, `GET /api/me/transactions`
+- [x] 퀘스트 검색 / 신청 / 완료 (B) — 검색은 클라이언트 필터, `POST /api/quests/:id/apply`(신청 즉시 배정), `POST /api/quests/:id/complete`(보상은 담당자 지갑에 바로 지급)
 
 ## 명령
 `pnpm dev` · `pnpm typecheck` · `pnpm lint` · `pnpm test` · `pnpm build` · `pnpm check`(전부)
