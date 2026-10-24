@@ -190,11 +190,12 @@ describe("ScanForm (initial step)", () => {
     expect(out).toContain('href="/scan/lookup"');
   });
 
-  it("enforces the length limits natively and starts with a Continue button and no error", () => {
+  it("enforces the length limits natively and starts with a Scan button and no error", () => {
     expect(out).toContain('minLength="20"');
     expect(out).toContain('maxLength="6000"');
     expect(out).toContain("0 / 6,000");
-    expect(out).toContain(">Continue<");
+    expect(out).toContain(">Scan<");
+    expect(out).not.toContain(">Continue<");
     expect(out).not.toContain('role="alert"');
   });
 });
