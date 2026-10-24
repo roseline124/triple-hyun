@@ -12,7 +12,7 @@
 로그인(현재 유저는 seed의 `u-me` 고정), 실제 결제, GPS, 길드 랭킹/연합/경매, 평판 시스템.
 
 ## 스택
-Next.js(App Router) + TypeScript + pnpm. 데이터는 서버 SQLite(libSQL, `src/lib/db.ts`)에 두고 첫 접속 때 seed를 넣는다. 브라우저는 `/api/data/*`, `/api/me/scan`으로 읽고 쓴다.
+Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design/tailwind-theme.css`). 데이터는 서버 SQLite(libSQL, `src/lib/db.ts`)에 두고 첫 접속 때 seed를 넣는다. 브라우저는 `/api/data/*`, `/api/me/scan`으로 읽고 쓴다.
 로컬은 `local.db` 파일, Vercel은 Turso(`TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`)를 쓴다. 현재 유저가 고정이라 모든 방문자가 같은 데이터를 공유한다.
 `ANTHROPIC_API_KEY`는 서버에만 둔다(`.env.local`, 예시는 `.env.example`).
 기본 모델 `claude-sonnet-5-5`.

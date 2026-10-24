@@ -160,7 +160,15 @@ const display = Noto_Sans_Display({ subsets: ["latin"], weight: ["500", "700", "
 
 ## 6. 컴포넌트
 
-Tailwind 클래스는 `tailwind-theme.css`를 적용한 뒤 그대로 쓰는 예시다. 아직 앱에 Tailwind가 없으면 `tokens.css` 변수로 같은 모양을 만든다(`reference/guild-detail.html`이 그 예시).
+Tailwind 클래스 예시는 그대로 복사해 쓸 수 있다(바이블의 예시 클래스는 모두 컴파일해서 확인했다). `reference/guild-detail.html`은 Tailwind 없이 `tokens.css` 변수만으로 만든 기준 화면이라, 모양을 비교할 때 보는 그림이다.
+
+### 스타일을 쓰는 방법 (Tailwind v4)
+- 새 컴포넌트는 Tailwind 클래스로 쓴다. 색, 반경, 글자 크기는 테마에 있는 이름만 생성된다(`bg-blue-500`, `rounded-lg` 같은 기본값은 만들어지지 않는다. 테스트가 확인한다).
+- 전역 CSS는 `src/app/globals.css`의 `@layer base`(요소) 또는 `@layer components`(공통 클래스)에만 추가한다. **레이어 밖에 쓴 CSS는 모든 유틸리티 클래스를 이긴다.**
+- Tailwind의 preflight가 `h1`~`h3`, `p`, `ul`의 기본 모양을 지우므로 `globals.css`의 base 레이어가 토큰 값으로 복원한다. 새 요소의 기본 모양이 필요하면 base 레이어에 추가한다.
+- Tailwind는 `src/`만 스캔한다. `docs/`나 `tests/`에만 쓴 클래스는 앱 CSS에 생기지 않는다.
+- 동적으로 조립한 클래스 이름(`` `bg-${color}` ``)은 생성되지 않는다. 전체 이름을 코드에 그대로 적는다.
+- 유틸리티는 소스에서 실제로 쓰인 것만 CSS에 들어간다. 브라우저 콘솔에서 클래스를 붙여 시험하면 동작하지 않는 것이 정상이다.
 
 ### 6.1 버튼
 한 영역에 주요 버튼은 하나만 둔다. 문구는 동사로 시작하고 결과를 말한다: "Join the guild", "Apply", "Try again". "Submit", "OK", "Click here"는 쓰지 않는다.
@@ -280,13 +288,13 @@ AI처럼 오래 걸리는 요청은 진행 상태와 취소 또는 시간 초과
 
 ## 11. 앱에 적용하는 순서
 
-토큰, 로고, 기준 화면은 이미 있고, 앱에는 1~4번까지 적용했다. 나머지는 작은 작업으로 나눠서 진행한다.
+토큰, 로고, 기준 화면은 이미 있고, 앱에는 1~5번까지 적용했다. 나머지는 작은 작업으로 나눠서 진행한다.
 
 1. [x] 브랜드 이름을 `Guild Quest`에서 `worktree`로 바꿨다(`layout.tsx`의 title, 헤더 로고, 메타데이터). `package.json`의 패키지 이름(`guild-quest`)은 아직 그대로다.
 2. [x] 로고를 앱에 넣었다. 앱이 서빙하는 복사본은 `public/worktree-icon.svg`(파비콘과 헤더)이고, `docs/design/assets/worktree-icon.svg` 원본과 바이트가 같은지 `tests/brand.test.tsx`가 확인한다. 로고를 바꿀 때는 두 파일을 같이 바꾼다.
 3. [x] 글꼴을 `next/font`로 불러온다(4절). 빌드 때 구글에서 내려받으므로 네트워크가 필요하다.
 4. [x] `src/app/globals.css`가 `docs/design/tokens.css`를 직접 import하고, 기존 색 값은 모두 토큰으로 바꿨다. raw hex가 없는지 테스트가 확인한다.
-5. [ ] Tailwind v4를 설치할지 결정한다(`tailwindcss`, `@tailwindcss/postcss`, 새 devDependency 2개). 설치하면 preflight 때문에 기존 화면이 달라지므로 화면별로 확인한다.
+5. [x] Tailwind v4를 설치했다(`tailwindcss`, `@tailwindcss/postcss`, devDependency 2개, 버전 4.3.3). `postcss.config.mjs`와 `globals.css`의 import로 연결했고, preflight로 달라진 기본 모양은 base 레이어에서 토큰 값으로 복원했다. 설치 전후 7개 페이지를 1280px, 390px에서 비교해 확인했다.
 6. [ ] 공통 컴포넌트(Button, Tile, RewardBadge, QuestRow)를 먼저 만들고 두 사람이 같이 쓴다.
 7. [ ] 화면을 하나씩 벤토 구조로 옮긴다. 화면마다 3개 폭(1280, 768, 390) 캡처를 남긴다. 지금 화면에는 바이블과 어긋난 내용이 남아 있다(가운뎃점으로 이은 메타 문자열, 시드 데이터의 "Docs Alchemists" 같은 번역투 이름 등).
 
