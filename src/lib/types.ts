@@ -1,16 +1,24 @@
 export type ContractType = "fixed" | "revenue_share" | "monthly";
 export type QuestStatus = "open" | "in_progress" | "done";
 
-export type StatScore = { name: string; score: number };
+export type HiddenSkill = {
+  name: string;
+  /** 0-100, 입력에 근거한 상대 추정치 */
+  score: number;
+  /** 입력/답변에서 인용한 문장 */
+  evidence: string;
+  source: "resume" | "answer";
+};
 export type SecondJob = { title: string; reason: string };
 
-/** 능력 검사(/api/scan)의 결과. features/scan 이 생성한다. */
+/** 능력 검사(/api/scan)의 결과. features/scan 이 생성하고 프로필에 저장한다. */
 export type ScanResult = {
   archetype: string;
   summary: string;
-  stats: StatScore[];
+  skills: HiddenSkill[];
   secondJobs: SecondJob[];
-  questTags: string[];
+  /** AI가 사람별로 추출한 태그. 길드·일감 tags 와 겹침으로 연결된다. */
+  tags: string[];
 };
 
 export type User = {

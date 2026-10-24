@@ -13,6 +13,8 @@ const KEY_FIELDS = {
   quests: "id",
   wallets: "userId",
   txs: "id",
+  // 능력 검사 프로필(닉네임+PIN). seed 없음, 브라우저 읽기 비허용(remote.ts).
+  profiles: "id",
 } as const;
 export type StoreName = keyof typeof KEY_FIELDS;
 const STORES = Object.keys(KEY_FIELDS) as StoreName[];
@@ -23,6 +25,7 @@ const seeds = (): Record<StoreName, readonly object[]> => ({
   quests: seedQuests(),
   wallets: seedWallets(),
   txs: seedTxs(),
+  profiles: [],
 });
 
 function connect(): Client {

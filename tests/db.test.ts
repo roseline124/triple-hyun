@@ -6,34 +6,16 @@ import { closeDb, getAll, getOne, putOne } from "@/lib/db";
 import { CURRENT_USER_ID } from "@/lib/seed";
 import { GET as listRoute } from "@/app/api/data/[store]/route";
 import { GET as oneRoute } from "@/app/api/data/[store]/[id]/route";
-import { GET as scanGet, PUT as scanPut } from "@/app/api/me/scan/route";
-import { getMyScan, saveScan } from "@/features/scan/storage";
 import { getGuild, listGuilds } from "@/features/guild/service";
 import { getQuest, listQuests } from "@/features/quest/service";
 import { getMyWallet } from "@/features/wallet/service";
-import type { ScanResult, User, Wallet } from "@/lib/types";
-
-const scan: ScanResult = {
-  archetype: "Documentation Alchemist",
-  summary: "s",
-  stats: [
-    { name: "Language", score: 90 },
-    { name: "Detail", score: 80 },
-    { name: "Speed", score: 70 },
-  ],
-  secondJobs: [
-    { title: "Localization PM", reason: "r1" },
-    { title: "AI reviewer", reason: "r2" },
-  ],
-  questTags: ["Technical writing", "Developer content"],
-};
+import type { User, Wallet } from "@/lib/types";
 
 /** 브라우저 fetch 를 실제 route handler 로 연결한다. */
 function stubFetchToRoutes() {
   vi.stubGlobal("fetch", async (input: string, init?: RequestInit) => {
     const path = new URL(input, "http://test").pathname;
     const req = new Request(`http://test${path}`, init);
-    if (path === "/api/me/scan") return init?.method === "PUT" ? scanPut(req) : scanGet();
     const [, , , store, id] = path.split("/");
     return id
       ? oneRoute(req, { params: Promise.resolve({ store, id }) })
@@ -116,6 +98,11 @@ describe("data routes", () => {
     expect((await res.json()).error.code).toBe("not_found");
   });
 
+  it("never exposes scan profiles (nickname, PIN hash) to the browser", async () => {
+    expect((await listRoute(new Request("http://test"), ctx({ store: "profiles" }))).status).toBe(404);
+    expect((await oneRoute(new Request("http://test"), ctx({ store: "profiles", id: "maya" }))).status).toBe(404);
+  });
+
   it("returns 404 for an unknown row", async () => {
     const res = await oneRoute(new Request("http://test"), ctx({ store: "quests", id: "nope" }));
     expect(res.status).toBe(404);
@@ -124,23 +111,5 @@ describe("data routes", () => {
   it("surfaces a server failure as a thrown error to the client service", async () => {
     vi.stubGlobal("fetch", async () => new Response("boom", { status: 500 }));
     await expect(listQuests()).rejects.toThrow();
-  });
-});
-
-describe("scan storage", () => {
-  it("persists the scan on the current user", async () => {
-    expect(await getMyScan()).toBeNull();
-    await saveScan(scan);
-    expect(await getMyScan()).toEqual(scan);
-  });
-
-  it("rejects an invalid scan payload and keeps the previous value", async () => {
-    await saveScan(scan);
-    const res = await scanPut(
-      new Request("http://test/api/me/scan", { method: "PUT", body: JSON.stringify({ archetype: "x" }) }),
-    );
-    expect(res.status).toBe(400);
-    expect(await getMyScan()).toEqual(scan);
-    await expect(saveScan({ ...scan, stats: [] })).rejects.toThrow();
   });
 });

@@ -3,8 +3,11 @@ import { ScanForm } from "./ScanForm";
 export default function ScanPage() {
   return (
     <>
-      <h1>Skill scan</h1>
-      <p className="muted">Describe your work and AI will surface skills you didn&apos;t know you had, plus second-career options.</p>
+      <h1>Find what you&apos;re good at, including what you haven&apos;t noticed</h1>
+      <p className="max-w-prose text-muted">
+        Paste your résumé or LinkedIn text, answer a few quick questions, and see the skills your work shows, second-career
+        options, and the guilds and quests that fit.
+      </p>
       <ScanForm />
     </>
   );
