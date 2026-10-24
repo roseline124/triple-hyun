@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>worktree: reference screen (guild detail)</title>
+<link rel="icon" href="../assets/worktree-icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Display:wght@500;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,7 +15,7 @@
 body { margin: 0; background: var(--color-bg); color: var(--color-text); font: var(--text-body)/var(--leading-body) var(--font-body); }
 a { color: inherit; }
 :focus-visible { outline: var(--focus-ring); outline-offset: var(--focus-offset); }
-.on-dark :focus-visible { outline-color: var(--wt-white); }
+.on-dark :focus-visible { outline-color: var(--color-focus-on-dark); }
 .wrap { max-width: var(--page-max); margin: 0 auto; padding: 0 var(--page-pad); }
 h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: var(--leading-tight); letter-spacing: var(--tracking-display); }
 .muted { color: var(--color-text-muted); }
@@ -22,11 +23,12 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: var(--lea
 /* header */
 header.top .wrap { display: flex; align-items: center; gap: var(--space-6); padding-block: var(--space-4); flex-wrap: wrap; }
 .brand { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; text-decoration: none; display: flex; align-items: center; gap: var(--space-2); letter-spacing: -0.03em; }
+.brand img { display: block; width: 32px; height: 32px; }
 nav { display: flex; gap: var(--space-1); white-space: nowrap; }
 nav a { padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); text-decoration: none; font-weight: 600; transition: background var(--duration-fast); }
-nav a:hover { background: var(--wt-pine-100); }
+nav a:hover { background: var(--wt-sand-100); }
 nav a[aria-current="page"] { background: var(--color-primary); color: var(--color-text-on-dark); }
-.wallet { margin-left: auto; font-weight: 700; background: var(--wt-lemon); padding: var(--space-1) var(--space-4); border-radius: var(--radius-pill); }
+.wallet { margin-left: auto; font-weight: 700; background: var(--wt-sand-300); padding: var(--space-1) var(--space-4); border-radius: var(--radius-pill); }
 
 /* buttons */
 .btn { font: inherit; font-weight: 700; border: 2px solid transparent; border-radius: var(--radius-pill); padding: var(--space-3) var(--space-6); cursor: pointer; transition: background var(--duration-fast); }
@@ -35,42 +37,43 @@ nav a[aria-current="page"] { background: var(--color-primary); color: var(--colo
 .btn-accent { background: var(--color-accent); color: var(--color-text); }
 .btn-accent:hover { background: var(--color-accent-hover); }
 .btn-outline { background: transparent; color: var(--color-text); border-color: var(--color-border-strong); padding-block: var(--space-2); }
-.btn-outline:hover { background: var(--color-accent); }
+.btn-outline:hover { background: var(--wt-sand-300); }
 .btn:disabled { cursor: not-allowed; opacity: .55; }
 
 /* bento */
 .bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap-bento); margin-block: var(--space-2) var(--space-6); }
 .tile { border-radius: var(--radius-tile); padding: var(--space-6); position: relative; overflow: hidden; }
 .tile h2 { font-size: 1.0625rem; font-weight: 700; margin-bottom: var(--space-3); letter-spacing: -0.01em; }
-.t-guild { grid-column: 1 / 8; grid-row: 1 / 3; background: var(--color-primary); color: var(--color-text-on-dark); border-radius: var(--radius-hero); padding: var(--space-8); display: flex; flex-direction: column; justify-content: flex-end; min-height: 25rem; }
-.t-guild .art { position: absolute; top: 0; right: 0; width: 66%; height: 58%; pointer-events: none; }
+.t-guild { grid-column: 1 / 8; grid-row: 1 / 3; background: var(--wt-brown-950); color: var(--color-text-on-dark); border-radius: var(--radius-hero); padding: var(--space-8); display: flex; flex-direction: column; justify-content: flex-end; min-height: 25rem; }
+.t-guild .art { position: absolute; top: -1.5rem; right: -0.5rem; width: 19rem; height: 19rem; pointer-events: none; }
 .t-guild h1 { font-weight: 800; font-size: clamp(1.875rem, 3.6vw, var(--text-display)); position: relative; max-width: 14ch; }
 .t-guild p { position: relative; margin: var(--space-4) 0 var(--space-6); max-width: 31rem; color: var(--color-text-on-dark-muted); }
 .cta { position: relative; display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
 .cta small { color: var(--color-text-on-dark-muted); font-size: var(--text-small); }
-.t-people { grid-column: 8 / 13; background: var(--wt-tangerine); border-radius: var(--radius-arch) var(--radius-tile) var(--radius-tile) var(--radius-tile); padding: 2.4rem var(--space-6) var(--space-6) 3.2rem; }
+.t-people { grid-column: 8 / 13; background: var(--wt-sand-300); border-radius: var(--radius-arch) var(--radius-tile) var(--radius-tile) var(--radius-tile); padding: 2.4rem var(--space-6) var(--space-6) 3.2rem; }
 .capsules { display: flex; gap: 6px; }
 .capsule { width: 46px; height: 74px; border-radius: var(--radius-pill); display: grid; place-items: end center; padding-bottom: var(--space-2); font-weight: 800; font-size: .875rem; position: relative; }
-.c1 { background: var(--wt-lemon); } .c2 { background: var(--wt-sky); } .c3 { background: var(--wt-lime); } .c4 { background: var(--wt-white); } .c5 { background: var(--wt-pine); color: var(--wt-white); font-size: .75rem; }
-.live { position: absolute; top: 9px; left: 50%; width: 11px; height: 11px; margin-left: -5.5px; border-radius: 50%; background: var(--wt-pine); border: 2.5px solid var(--wt-white); }
+.c1 { background: var(--wt-cream-100); } .c2 { background: var(--wt-white); } .c3 { background: var(--wt-orange-100); } .c4 { background: var(--wt-sand-100); } .c5 { background: var(--wt-brown-950); color: var(--wt-cream-100); font-size: .75rem; }
+.live { position: absolute; top: 9px; left: 50%; width: 11px; height: 11px; margin-left: -5.5px; border-radius: 50%; background: var(--wt-brown-950); border: 2.5px solid var(--wt-white); }
 .t-people p { margin: var(--space-3) 0 0; font-weight: 600; }
-.t-rating { grid-column: 8 / 13; background: var(--wt-sky); }
+.t-rating { grid-column: 8 / 13; background: var(--wt-sand-100); }
 .leaves { display: flex; gap: 6px; margin-bottom: var(--space-2); }
-.leaf { width: 30px; height: 30px; border-radius: var(--radius-leaf); background: var(--wt-pine); }
-.leaf.part { background: linear-gradient(90deg, var(--wt-pine) 80%, rgba(13,51,38,.2) 80%); }
+.leaf { width: 30px; height: 30px; border-radius: var(--radius-leaf); background: var(--wt-brown-950); }
+.leaf.part { background: linear-gradient(90deg, var(--wt-brown-950) 80%, var(--wt-sand-300) 80%); }
 .t-rating strong { font-family: var(--font-display); font-weight: 700; font-size: 1.375rem; display: block; }
-.t-pay { grid-column: 1 / 5; background: var(--wt-lemon); border-radius: var(--radius-tile) var(--radius-tile) 110px var(--radius-tile); }
+.t-pay { grid-column: 1 / 5; background: var(--wt-orange-100); border-radius: var(--radius-tile) var(--radius-tile) 110px var(--radius-tile); }
 .t-pay strong { display: block; font-family: var(--font-display); font-weight: 800; font-size: 2rem; line-height: 1.1; letter-spacing: var(--tracking-display); }
 .t-rank { grid-column: 5 / 9; background: var(--color-surface); border: var(--border-strong); }
 .rungs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
 .rungs li { display: grid; grid-template-columns: 34px 1fr; gap: var(--space-3); align-items: center; }
-.rungs i { border-radius: 50%; justify-self: center; background: var(--wt-pine); }
-.rungs li:nth-child(1) i { width: 12px; height: 12px; } .rungs li:nth-child(2) i { width: 22px; height: 22px; background: var(--wt-pine-500); } .rungs li:nth-child(3) i { width: 34px; height: 34px; background: var(--wt-lime); border: 3px solid var(--wt-pine); }
+.rungs i { border-radius: 50%; justify-self: center; background: var(--wt-brown-950); }
+.rungs li:nth-child(1) i { width: 12px; height: 12px; } .rungs li:nth-child(2) i { width: 22px; height: 22px; background: var(--wt-sand-300); border: 2px solid var(--wt-brown-950); } .rungs li:nth-child(3) i { width: 34px; height: 34px; background: var(--wt-sand-300); border: 3px solid var(--wt-brown-950); }
 .rungs b { display: block; line-height: 1.2; } .rungs small { color: var(--color-text-muted); font-size: var(--text-small); line-height: 1.3; display: block; }
-.t-done { grid-column: 9 / 13; background: var(--wt-lime); }
+.t-done { grid-column: 9 / 13; background: var(--wt-brown-800); color: var(--color-text-on-dark); }
 .dots { display: grid; grid-template-columns: repeat(19, 1fr); gap: 5px; max-width: 24rem; }
-.dots i { aspect-ratio: 1; border-radius: 50%; background: var(--wt-pine); }
-.t-done p { margin: var(--space-3) 0 0; font-size: var(--text-small); }
+.dots i { aspect-ratio: 1; border-radius: 50%; background: var(--wt-cream-100); }
+.dots i:last-child { background: var(--wt-orange-500); }
+.t-done p { margin: var(--space-3) 0 0; font-size: var(--text-small); color: var(--color-text-on-dark-muted); }
 
 /* quest list */
 h2.section { font-size: var(--text-h2); margin: var(--space-8) 0 var(--space-4); }
@@ -79,10 +82,10 @@ h2.section { font-size: var(--text-h2); margin: var(--space-8) 0 var(--space-4);
 .quest:first-child { border-top: 0; }
 .quest h3 { font-family: var(--font-body); font-weight: 700; font-size: var(--text-h3); letter-spacing: 0; line-height: var(--leading-snug); }
 .facts { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: flex; gap: var(--space-1) var(--space-4); flex-wrap: wrap; color: var(--color-text-muted); font-size: var(--text-small); }
-.reward { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; background: var(--wt-lime); border-radius: var(--radius-leaf); padding: var(--space-2) var(--space-6); }
+.reward { font-family: var(--font-display); font-weight: 700; font-variant-numeric: tabular-nums; background: var(--wt-sand-300); border-radius: var(--radius-leaf); padding: var(--space-2) var(--space-6); }
 
 /* states (reference for every async screen) */
-.states { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gap-bento); }
+.states { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--gap-bento); }
 .state { background: var(--color-surface); border-radius: var(--radius-tile); padding: var(--space-6); display: grid; gap: var(--space-3); align-content: start; }
 .state h3 { font-size: var(--text-h3); }
 .state p { margin: 0; color: var(--color-text-muted); font-size: var(--text-small); }
@@ -91,18 +94,20 @@ h2.section { font-size: var(--text-h2); margin: var(--space-8) 0 var(--space-4);
 .state.error { background: var(--color-danger-soft); border: 2px solid var(--color-danger); }
 .state.error h3 { color: var(--color-danger); }
 .state.error p { color: var(--color-text); }
+.state.success { background: var(--color-success-soft); border: 2px solid var(--color-success); }
+.state.success h3 { color: var(--color-success); }
+.state.success p { color: var(--color-text); }
 .note { margin: var(--space-6) 0 var(--space-12); font-size: var(--text-caption); color: var(--color-text-muted); }
 
 @media (max-width: 48rem) {
   .bento { grid-template-columns: 1fr; }
   .tile { grid-column: 1 / -1 !important; grid-row: auto !important; }
   .t-guild { min-height: 0; padding: 10.5rem var(--space-6) var(--space-6); }
-  .t-guild .art { width: 62%; height: 9.5rem; }
+  .t-guild .art { width: 12rem; height: 12rem; top: -0.5rem; right: -0.25rem; }
   .t-people { border-radius: 120px var(--radius-tile) var(--radius-tile) var(--radius-tile); padding-left: 2.6rem; }
   .list { padding-inline: var(--space-6); border-radius: var(--radius-tile); }
   .quest { grid-template-columns: 1fr auto; }
   .quest .btn { grid-column: 1 / -1; justify-self: start; }
-  .states { grid-template-columns: 1fr; }
   .wallet { margin-left: 0; }
   .dots { gap: 4px; }
 }
@@ -111,7 +116,7 @@ h2.section { font-size: var(--text-h2); margin: var(--space-8) 0 var(--space-4);
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M16 29V13"/><path d="M16 22L8 15"/><path d="M16 17L24 10"/></g><g fill="currentColor"><circle cx="16" cy="9" r="3.4"/><circle cx="8" cy="12" r="3.4"/><circle cx="24" cy="7" r="3.4"/></g></svg>worktree</a>
+    <a class="brand" href="#"><img src="../assets/worktree-icon.svg" alt="" width="32" height="32">worktree</a>
     <nav aria-label="Main">
       <a href="#">Skill scan</a>
       <a href="#" aria-current="page">Guilds</a>
@@ -124,13 +129,8 @@ h2.section { font-size: var(--text-h2); margin: var(--space-8) 0 var(--space-4);
 <main class="wrap">
   <div class="bento">
     <section class="tile t-guild on-dark" aria-labelledby="g-name">
-      <svg class="art" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMin slice" aria-hidden="true">
-        <circle cx="500" cy="90" r="120" fill="#CDEB6B"/>
-        <path d="M330 -10 H450 V110 A60 60 0 0 1 330 110 Z" fill="#FF8040" transform="translate(-20 -10)"/>
-        <path d="M545 210 C 545 150, 600 150, 600 210 C 600 270, 545 270, 545 210 Z" fill="#BDE2F2"/>
-        <g fill="none" stroke="#0D3326" stroke-width="7" stroke-linecap="round"><path d="M500 220 V120"/><path d="M500 175 L452 128"/><path d="M500 145 L548 98"/></g>
-        <g fill="#0D3326"><circle cx="500" cy="106" r="15"/><circle cx="446" cy="122" r="15"/><circle cx="554" cy="92" r="15"/></g>
-      </svg>
+      <!-- the logo's tree: trunk and branches = a career, fruit = jobs, orange fruit = the next job, root = the guild -->
+      <img class="art" src="../assets/worktree-mark-on-dark.svg" alt="" width="304" height="304">
       <h1 id="g-name">Northwind Platform Guild</h1>
       <p>Ex-DevOps and backend engineers who take on infrastructure cleanups together, and look out for each other between gigs.</p>
       <div class="cta"><button class="btn btn-accent" type="button">Join the guild</button><small>$40 one-time fee</small></div>
@@ -164,10 +164,10 @@ h2.section { font-size: var(--text-h2); margin: var(--space-8) 0 var(--space-4);
       </ul>
     </section>
 
-    <section class="tile t-done" aria-labelledby="done-h">
+    <section class="tile t-done on-dark" aria-labelledby="done-h">
       <h2 id="done-h">57 quests finished</h2>
-      <div class="dots" role="img" aria-label="57 dots, one for each finished quest"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <p>One dot per quest, since the guild started.</p>
+      <div class="dots" role="img" aria-label="57 dots, one for each finished quest. The orange dot is the latest."><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <p>One dot per quest. The orange one is the latest.</p>
     </section>
   </div>
 
@@ -203,6 +203,10 @@ h2.section { font-size: var(--text-h2); margin: var(--space-8) 0 var(--space-4);
       <h3>Couldn't load quests</h3>
       <p>The server didn't respond. Your other guild info is safe. Check your connection and try again.</p>
       <button class="btn btn-outline" type="button" style="justify-self:start">Try again</button>
+    </section>
+    <section class="state success" role="status">
+      <h3>You joined the guild</h3>
+      <p>Welcome to Northwind. You're a Seedling now. Pick your first quest from the list above.</p>
     </section>
   </div>
   <p class="note">Reference screen with sample data. These guilds, people, ranks, and numbers are made up. Built only from docs/design/tokens.css.</p>

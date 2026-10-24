@@ -1,6 +1,7 @@
 /*
  * worktree design tokens for Tailwind CSS v4
  * Mirror of docs/design/tokens.css. If you change a value, change both files.
+ * Palette is derived from the logo: docs/design/assets/worktree-icon.svg
  *
  * Usage (after Tailwind v4 is added to the app):
  *   @import "tailwindcss";
@@ -11,23 +12,24 @@
  */
 @theme {
   --color-*: initial;
-  --color-pine: #0D3326;
-  --color-pine-700: #164A38;
-  --color-pine-500: #5E8F6E;
-  --color-pine-100: #C9DDD0;
-  --color-lime: #CDEB6B;
-  --color-lime-hover: #DDF58F;
-  --color-tangerine: #FF8040;
-  --color-sky: #BDE2F2;
-  --color-lemon: #FFE27A;
-  --color-paper: #F3F5F0;
+  --color-brown-950: #140C09;
+  --color-brown-800: #2B1D17;
+  --color-cream-50: #FFFAF3;
+  --color-cream-100: #FFF4E8;
+  --color-sand-100: #F6E6D0;
+  --color-sand-300: #E8C49A;
+  --color-orange-500: #FF6A2B;
+  --color-orange-400: #FF8450;
+  --color-orange-100: #FFE1D1;
   --color-white: #FFFFFF;
-  --color-muted: #4A6357;
-  --color-line: #E2E8E0;
+  --color-muted: #634D40;
+  --color-line: #EBDCC8;
+  --color-skeleton: #EFE3D2;
+  --color-success: #1F6B3A;
+  --color-success-soft: #E0F0E3;
   --color-danger: #B42318;
   --color-danger-soft: #FDE7E4;
-  --color-skeleton: #E4E9E2;
-  --color-on-dark-muted: #D5E5DA;
+  --color-on-dark-muted: #D9C6B4;
   --color-transparent: transparent;
   --color-current: currentColor;
 
