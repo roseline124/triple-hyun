@@ -169,6 +169,9 @@ describe("helpers", () => {
     const old = { id: "g-old", name: "Old", tags: [], memberIds: ["u"] } as Partial<Guild> & Pick<Guild, "id">;
     expect(withDefaults(old)).toMatchObject({ recruiting: true, maxMembers: 20, lookingFor: [], joinFee: JOIN_FEE_USD, name: "Old" });
   });
+  it("charges the current join fee even for rows saved with an old fee", () => {
+    expect(withDefaults({ id: "g-1", joinFee: 5 }).joinFee).toBe(35);
+  });
   it("lists each tag once across guilds, ignoring case, sorted", () => {
     expect(allTags([guild({ tags: ["b tag", "A tag"] }), guild({ tags: ["B TAG", "c"] })])).toEqual(["A tag", "b tag", "c"]);
   });
