@@ -3,8 +3,8 @@
 export default function Error({ reset }: { error: Error; reset: () => void }) {
   return (
     <div role="alert">
-      <p className="error">문제가 발생했습니다.</p>
-      <button onClick={reset}>다시 시도</button>
+      <p className="error">Something went wrong.</p>
+      <button onClick={reset}>Try again</button>
     </div>
   );
 }

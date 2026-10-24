@@ -9,9 +9,9 @@ describe("api helpers", () => {
   });
 
   it("fail carries code, message and status", async () => {
-    const res = fail("not_found", "없음", 404);
+    const res = fail("not_found", "Not found", 404);
     expect(res.status).toBe(404);
-    expect(await res.json()).toEqual({ ok: false, error: { code: "not_found", message: "없음" } });
+    expect(await res.json()).toEqual({ ok: false, error: { code: "not_found", message: "Not found" } });
   });
 
 });

@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { Loadable } from "@/components/Loadable";
 import { listGuilds } from "@/features/guild/service";
+import { formatUsd } from "@/lib/format";
 import { useAsync } from "@/lib/useAsync";
 
 export default function GuildsPage() {
   const state = useAsync(listGuilds);
   return (
     <>
-      <h1>길드</h1>
-      <Loadable state={state} isEmpty={(g) => g.length === 0} empty="아직 길드가 없습니다.">
+      <h1>Guilds</h1>
+      <Loadable state={state} isEmpty={(g) => g.length === 0} empty="No guilds yet.">
         {(guilds) => (
           <ul className="cards">
             {guilds.map((g) => (
@@ -19,7 +20,8 @@ export default function GuildsPage() {
                   <strong>{g.name}</strong>
                 </Link>
                 <div className="muted">
-                  {g.region} · 멤버 {g.memberIds.length}명 · 가입비 {g.joinFee.toLocaleString()}
+                  {g.region} · {g.memberIds.length} {g.memberIds.length === 1 ? "member" : "members"} · Join fee{" "}
+                  {formatUsd(g.joinFee)}
                 </div>
                 <div>{g.description}</div>
               </li>

@@ -5,13 +5,13 @@ import { ScanResultSchema, type ScanInput } from "./schema";
 
 export const SCAN_MODEL = "claude-sonnet-5-5";
 
-const SYSTEM = `당신은 AI 때문에 직업이 흔들리는 사람의 '마력 탐지기'입니다.
-사용자의 경력과 관심사에서 본인이 몰랐던 능력을 찾아 RPG 캐릭터처럼 정리하세요.
-- archetype: 현재 직업 클래스 이름(예: "문장 연금술사")
-- stats: 3~6개 능력치와 0~100 점수. 입력에 근거 없는 능력은 만들지 않는다.
-- secondJobs: 제2의 직업 후보 2~4개와 입력에 근거한 이유
-- questTags: 일감 게시판에서 검색할 한국어 태그 2~6개
-모든 값은 한국어로, 과장 없이 구체적으로 쓰세요.`;
+const SYSTEM = `You are a hidden-skills scanner for US tech workers whose jobs are being reshaped by AI.
+From the user's experience and interests, uncover skills they may not realize they have and present them like an RPG character sheet.
+- archetype: a short class name for their current role (e.g. "Documentation Alchemist")
+- stats: 3-6 skills, each scored 0-100. Never invent skills the input doesn't support.
+- secondJobs: 2-4 second-career options in the US tech market, each with a reason grounded in the input
+- questTags: 2-6 English tags for searching the quest board (e.g. "Technical writing", "QA automation")
+Write every value in natural American English. Be concrete and avoid hype.`;
 
 export class ScanError extends Error {
   constructor(
@@ -29,7 +29,7 @@ export function createAnthropicClient(): Anthropic {
 }
 
 export async function runScan(input: ScanInput, client: MessagesClient): Promise<ScanResult> {
-  const userText = `[경력/하던 일]\n${input.background}\n\n[관심사]\n${input.interests || "(없음)"}`;
+  const userText = `[Experience]\n${input.background}\n\n[Interests]\n${input.interests || "(none)"}`;
   try {
     const res = await client.messages.parse({
       model: SCAN_MODEL,
@@ -39,17 +39,17 @@ export async function runScan(input: ScanInput, client: MessagesClient): Promise
       output_config: { effort: "low", format: zodOutputFormat(ScanResultSchema) },
     });
     if (res.stop_reason === "refusal") {
-      throw new ScanError("refusal", "모델이 이 입력에 대한 응답을 거절했습니다.");
+      throw new ScanError("refusal", "The model declined to respond to this input.");
     }
     if (!res.parsed_output) {
-      throw new ScanError("empty_output", "결과를 해석하지 못했습니다. 다시 시도해주세요.");
+      throw new ScanError("empty_output", "Couldn't interpret the result. Please try again.");
     }
     return res.parsed_output;
   } catch (e) {
     if (e instanceof ScanError) throw e;
     if (e instanceof Anthropic.APIConnectionTimeoutError) {
-      throw new ScanError("timeout", "분석이 너무 오래 걸립니다. 다시 시도해주세요.");
+      throw new ScanError("timeout", "The scan is taking too long. Please try again.");
     }
-    throw new ScanError("upstream", "AI 호출에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    throw new ScanError("upstream", "The AI request failed. Please try again in a moment.");
   }
 }

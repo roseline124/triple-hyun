@@ -1,21 +1,21 @@
+import { createClient, type Client } from "@libsql/client";
 import { seedGuilds, seedQuests, seedTxs, seedUsers, seedWallets } from "./seed";
 
 /**
- * 브라우저 IndexedDB 저장소 (데모용, 서버 DB 없음).
- * 첫 오픈(upgrade) 때 seed 를 넣는다. 브라우저 데이터를 지우면 초기화된다.
- * 여러 store 를 건드리는 변경은 getDb() 로 받은 연결에서 하나의 transaction 으로 처리할 것.
+ * 서버 전용 SQLite(libSQL) 저장소. 브라우저에서 import 하지 말고 route handler 에서만 쓴다.
+ * - 로컬: TURSO_DATABASE_URL 이 없으면 프로젝트 루트의 local.db 파일을 쓴다.
+ * - Vercel: 파일시스템이 영속적이지 않으므로 TURSO_DATABASE_URL / TURSO_AUTH_TOKEN 이 필수다.
+ * 각 테이블은 (id, data JSON) 두 컬럼이다. 첫 접속 때 테이블과 seed 를 만든다.
  */
-const DB_NAME = "guild-quest";
-const DB_VERSION = 1;
-
-const KEY_PATHS = {
+const KEY_FIELDS = {
   users: "id",
   guilds: "id",
   quests: "id",
   wallets: "userId",
   txs: "id",
 } as const;
-export type StoreName = keyof typeof KEY_PATHS;
+export type StoreName = keyof typeof KEY_FIELDS;
+const STORES = Object.keys(KEY_FIELDS) as StoreName[];
 
 const seeds = (): Record<StoreName, readonly object[]> => ({
   users: seedUsers(),
@@ -25,24 +25,39 @@ const seeds = (): Record<StoreName, readonly object[]> => ({
   txs: seedTxs(),
 });
 
-let dbPromise: Promise<IDBDatabase> | null = null;
+function connect(): Client {
+  const url = process.env.TURSO_DATABASE_URL;
+  if (!url && process.env.VERCEL) {
+    throw new Error("TURSO_DATABASE_URL is not set.");
+  }
+  return createClient({ url: url ?? "file:local.db", authToken: process.env.TURSO_AUTH_TOKEN });
+}
 
-export function getDb(): Promise<IDBDatabase> {
+let dbPromise: Promise<Client> | null = null;
+
+export function getDb(): Promise<Client> {
   if (dbPromise) return dbPromise;
-  const p = new Promise<IDBDatabase>((resolve, reject) => {
-    const open = indexedDB.open(DB_NAME, DB_VERSION);
-    open.onupgradeneeded = () => {
-      const db = open.result;
-      const tx = open.transaction!;
+  const p = (async () => {
+    const client = connect();
+    try {
       const data = seeds();
-      for (const name of Object.keys(KEY_PATHS) as StoreName[]) {
-        db.createObjectStore(name, { keyPath: KEY_PATHS[name] });
-        for (const row of data[name]) tx.objectStore(name).put(row);
-      }
-    };
-    open.onsuccess = () => resolve(open.result);
-    open.onerror = () => reject(open.error);
-  });
+      await client.batch(
+        STORES.flatMap((name) => [
+          `CREATE TABLE IF NOT EXISTS ${name} (id TEXT PRIMARY KEY, data TEXT NOT NULL)`,
+          // 이미 있는 행은 덮어쓰지 않으므로 재시작·동시 콜드스타트에도 안전하다.
+          ...data[name].map((row) => ({
+            sql: `INSERT OR IGNORE INTO ${name} (id, data) VALUES (?, ?)`,
+            args: [String((row as Record<string, unknown>)[KEY_FIELDS[name]]), JSON.stringify(row)],
+          })),
+        ]),
+        "write",
+      );
+    } catch (e) {
+      client.close();
+      throw e;
+    }
+    return client;
+  })();
   p.catch(() => {
     if (dbPromise === p) dbPromise = null;
   });
@@ -50,31 +65,35 @@ export function getDb(): Promise<IDBDatabase> {
   return p;
 }
 
-/** 연결을 닫고 캐시를 비운다. 테스트와 데모 초기화용. */
+/** 연결을 닫고 캐시를 비운다. 테스트용. */
 export async function closeDb(): Promise<void> {
   const p = dbPromise;
   dbPromise = null;
   if (p) (await p.catch(() => null))?.close();
 }
 
-function wrap<T>(r: IDBRequest<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    r.onsuccess = () => resolve(r.result);
-    r.onerror = () => reject(r.error);
-  });
-}
-
 export async function getAll<T>(store: StoreName): Promise<T[]> {
   const db = await getDb();
-  return wrap<T[]>(db.transaction(store).objectStore(store).getAll());
+  const rs = await db.execute(`SELECT data FROM ${store} ORDER BY rowid`);
+  return rs.rows.map((r) => JSON.parse(String(r.data)) as T);
 }
 
 export async function getOne<T>(store: StoreName, key: string): Promise<T | undefined> {
   const db = await getDb();
-  return wrap<T | undefined>(db.transaction(store).objectStore(store).get(key));
+  const rs = await db.execute({ sql: `SELECT data FROM ${store} WHERE id = ?`, args: [key] });
+  const row = rs.rows[0];
+  return row ? (JSON.parse(String(row.data)) as T) : undefined;
 }
 
 export async function putOne<T extends object>(store: StoreName, value: T): Promise<void> {
   const db = await getDb();
-  await wrap(db.transaction(store, "readwrite").objectStore(store).put(value));
+  const id = String((value as Record<string, unknown>)[KEY_FIELDS[store]]);
+  await db.execute({
+    sql: `INSERT INTO ${store} (id, data) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET data = excluded.data`,
+    args: [id, JSON.stringify(value)],
+  });
+}
+
+export function isStoreName(name: string): name is StoreName {
+  return name in KEY_FIELDS;
 }

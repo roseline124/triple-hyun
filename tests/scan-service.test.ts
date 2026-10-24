@@ -4,20 +4,20 @@ import { ScanInputSchema } from "@/features/scan/schema";
 import { ScanError, SCAN_MODEL, runScan } from "@/features/scan/service";
 import type { ScanResult } from "@/lib/types";
 
-const input = { background: "10년간 영한 번역가로 일했습니다." };
+const input = { background: "I worked as a technical writer for ten years." };
 const result: ScanResult = {
-  archetype: "문장 연금술사",
-  summary: "번역 경험에서 검수 능력이 보입니다.",
+  archetype: "Documentation Alchemist",
+  summary: "Your writing background shows strong review skills.",
   stats: [
-    { name: "언어 감각", score: 90 },
-    { name: "꼼꼼함", score: 80 },
-    { name: "조사력", score: 60 },
+    { name: "Language sense", score: 90 },
+    { name: "Attention to detail", score: 80 },
+    { name: "Research", score: 60 },
   ],
   secondJobs: [
-    { title: "AI 번역 검수자", reason: "번역 경력" },
-    { title: "콘텐츠 현지화 PM", reason: "문맥 이해" },
+    { title: "AI content reviewer", reason: "Writing experience" },
+    { title: "Localization PM", reason: "Context awareness" },
   ],
-  questTags: ["번역", "콘텐츠"],
+  questTags: ["Technical writing", "Developer content"],
 };
 
 function fakeClient(parse: (args: unknown) => Promise<unknown>) {
@@ -62,7 +62,7 @@ describe("runScan", () => {
 
 describe("ScanInputSchema", () => {
   it("rejects too-short background", () => {
-    expect(ScanInputSchema.safeParse({ background: "짧음" }).success).toBe(false);
+    expect(ScanInputSchema.safeParse({ background: "short" }).success).toBe(false);
   });
   it("rejects over-long background", () => {
     expect(ScanInputSchema.safeParse({ background: "a".repeat(2001) }).success).toBe(false);

@@ -1,14 +1,18 @@
-import { getOne, putOne } from "@/lib/db";
-import { CURRENT_USER_ID } from "@/lib/seed";
-import type { ScanResult, User } from "@/lib/types";
+import { apiFetch } from "@/lib/api";
+import type { ScanResult } from "@/lib/types";
 
-/** 검사 결과를 현재 유저에 저장한다. 서버가 아니라 브라우저에서 호출한다. */
+/** 검사 결과를 현재 유저에 저장한다(서버 DB). 브라우저에서 호출한다. */
 export async function saveScan(scan: ScanResult): Promise<void> {
-  const user = await getOne<User>("users", CURRENT_USER_ID);
-  if (!user) throw new Error("current user not found");
-  await putOne("users", { ...user, scan });
+  const res = await apiFetch<ScanResult>("/api/me/scan", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(scan),
+  });
+  if (!res.ok) throw new Error(res.error.message);
 }
 
 export async function getMyScan(): Promise<ScanResult | null> {
-  return (await getOne<User>("users", CURRENT_USER_ID))?.scan ?? null;
+  const res = await apiFetch<ScanResult | null>("/api/me/scan", { cache: "no-store" });
+  if (!res.ok) throw new Error(res.error.message);
+  return res.data;
 }

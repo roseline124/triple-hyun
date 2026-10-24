@@ -8,7 +8,7 @@ vi.mock("@/features/scan/service", async (importOriginal) => {
 import { runScan, ScanError } from "@/features/scan/service";
 import { POST as scanPost } from "@/app/api/scan/route";
 
-const valid = { background: "충분히 긴 경력 설명입니다." };
+const valid = { background: "A sufficiently long experience description." };
 const req = (body: unknown) =>
   new Request("http://x/api/scan", { method: "POST", body: typeof body === "string" ? body : JSON.stringify(body) });
 
@@ -28,7 +28,7 @@ describe("POST /api/scan", () => {
 
   it("400 on malformed JSON and on short input", async () => {
     expect((await scanPost(req("not json"))).status).toBe(400);
-    expect((await scanPost(req({ background: "짧" }))).status).toBe(400);
+    expect((await scanPost(req({ background: "short" }))).status).toBe(400);
     expect(runScan).not.toHaveBeenCalled();
   });
 

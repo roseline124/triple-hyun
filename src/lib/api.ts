@@ -17,6 +17,6 @@ export async function apiFetch<T>(input: string, init?: RequestInit): Promise<Ap
     const res = await fetch(input, init);
     return (await res.json()) as ApiResult<T>;
   } catch {
-    return { ok: false, error: { code: "network", message: "서버에 연결할 수 없습니다." } };
+    return { ok: false, error: { code: "network", message: "Unable to reach the server." } };
   }
 }
