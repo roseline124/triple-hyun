@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  allRegions,
   allTags,
   filterGuilds,
   isOpen,
@@ -123,7 +124,7 @@ describe("filterGuilds", () => {
   const b = guild({ id: "b", name: "Austin Test Guardians", region: "Austin, TX", tags: ["QA automation"], recruiting: false });
   const c = guild({ id: "c", name: "Remote Ops", region: "Remote", tags: ["Support ops"], memberIds: ["1", "2", "3"] });
   const all = [a, b, c];
-  const none = { query: "", recruitingOnly: false, tag: null };
+  const none = { query: "", region: "", recruitingOnly: false, tag: null };
 
   it("returns everything with no filters", () => {
     expect(filterGuilds(all, none)).toHaveLength(3);
@@ -140,12 +141,23 @@ describe("filterGuilds", () => {
     expect(filterGuilds(all, { ...none, tag: "qa AUTOMATION" }).map((g) => g.id)).toEqual(["b"]);
     expect(filterGuilds(all, { ...none, tag: "QA" })).toEqual([]);
   });
+  it("filters by exact region", () => {
+    expect(filterGuilds(all, { ...none, region: "Austin, TX" }).map((g) => g.id)).toEqual(["b"]);
+    expect(filterGuilds(all, { ...none, region: "Austin" })).toEqual([]);
+  });
   it("returns an empty list when nothing matches", () => {
     expect(filterGuilds(all, { ...none, query: "zzz" })).toEqual([]);
   });
   it("combines filters", () => {
-    expect(filterGuilds(all, { query: "docs", recruitingOnly: true, tag: "AI review" }).map((g) => g.id)).toEqual(["a"]);
-    expect(filterGuilds(all, { query: "austin", recruitingOnly: true, tag: null })).toEqual([]);
+    expect(filterGuilds(all, { query: "docs", region: "San Francisco, CA", recruitingOnly: true, tag: "AI review" }).map((g) => g.id)).toEqual(["a"]);
+    expect(filterGuilds(all, { query: "austin", region: "", recruitingOnly: true, tag: null })).toEqual([]);
+  });
+});
+
+describe("allRegions", () => {
+  it("lists each region once, skipping blanks, sorted", () => {
+    const regions = allRegions([guild({ region: "Remote" }), guild({ region: "Austin, TX" }), guild({ region: "Remote" }), guild({ region: "" })]);
+    expect(regions).toEqual(["Austin, TX", "Remote"]);
   });
 });
 

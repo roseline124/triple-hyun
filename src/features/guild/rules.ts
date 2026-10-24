@@ -30,14 +30,15 @@ export function recruitStatus(guild: Guild): RecruitStatus {
 
 export const isOpen = (guild: Guild) => recruitStatus(guild) === "recruiting";
 
-export type GuildFilter = { query: string; recruitingOnly: boolean; tag: string | null };
+export type GuildFilter = { query: string; region: string; recruitingOnly: boolean; tag: string | null };
 
-/** 지역·이름·태그에 질의어가 들어 있는지(대소문자 무시)와 모집 중, 정확 일치 태그로 거른다. */
-export function filterGuilds(guilds: Guild[], { query, recruitingOnly, tag }: GuildFilter): Guild[] {
+/** 지역·이름·태그에 질의어가 들어 있는지(대소문자 무시)와 모집 중, 정확 일치 태그·지역으로 거른다. */
+export function filterGuilds(guilds: Guild[], { query, region, recruitingOnly, tag }: GuildFilter): Guild[] {
   const q = query.trim().toLowerCase();
   const wantedTag = tag?.trim().toLowerCase() ?? null;
   return guilds.filter((g) => {
     if (recruitingOnly && !isOpen(g)) return false;
+    if (region && g.region !== region) return false;
     if (wantedTag && !g.tags.some((t) => t.toLowerCase() === wantedTag)) return false;
     if (!q) return true;
     return [g.name, g.region, ...g.tags].some((s) => s.toLowerCase().includes(q));
@@ -50,6 +51,10 @@ export function allTags(items: { tags: string[] }[]): string[] {
   for (const item of items) for (const t of item.tags) if (!byKey.has(t.toLowerCase())) byKey.set(t.toLowerCase(), t);
   return [...byKey.values()].sort((a, b) => a.localeCompare(b));
 }
+
+/** 지역 select 옵션용. 빈 값은 빼고 한 번씩만, 알파벳순으로. */
+export const allRegions = (guilds: Guild[]): string[] =>
+  [...new Set(guilds.map((g) => g.region).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 
 /** 프로필 id. `features/scan/profile.ts` 의 `normalizeNickname` 과 같은 규칙이어야 한다(서버 전용이라 import 하지 않는다). */
 export const profileIdOf = (nickname: string) => nickname.trim().replace(/\s+/g, " ").toLowerCase();
