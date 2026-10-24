@@ -44,6 +44,9 @@ describe("GuildList", () => {
   it("renders every guild with a labeled search box, a Recruiting only toggle, tag filters and a count", () => {
     const out = html(<GuildList guilds={seedGuilds()} />);
     expect(out).toContain('<label for="guild-search">Search by region or tag</label>');
+    expect(out).toContain('<label for="guild-region">Location</label>');
+    expect(out).toContain("All locations");
+    expect(out).toContain('<option value="Austin, TX">Austin, TX</option>');
     expect(out).toContain("Recruiting only");
     expect(out).toContain('aria-label="Filter by tag"');
     expect(out).toContain('aria-pressed="false"');

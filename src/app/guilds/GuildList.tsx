@@ -2,18 +2,19 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { allTags, filterGuilds, type GuildFilter } from "@/features/guild/rules";
+import { allRegions, allTags, filterGuilds, type GuildFilter } from "@/features/guild/rules";
 import type { Guild } from "@/lib/types";
 import { GuildCard } from "./GuildCard";
 import { outlineButton, textInput } from "@/app/scan/ui";
 
-const NO_FILTER: GuildFilter = { query: "", recruitingOnly: false, tag: null };
+const NO_FILTER: GuildFilter = { query: "", region: "", recruitingOnly: false, tag: null };
 
 export function GuildList({ guilds }: { guilds: Guild[] }) {
   const [filter, setFilter] = useState<GuildFilter>(NO_FILTER);
   const shown = filterGuilds(guilds, filter);
   const tags = allTags(guilds);
-  const active = filter.query !== "" || filter.recruitingOnly || filter.tag !== null;
+  const regions = allRegions(guilds);
+  const active = filter.query !== "" || filter.region !== "" || filter.recruitingOnly || filter.tag !== null;
 
   return (
     <div>
@@ -27,6 +28,22 @@ export function GuildList({ guilds }: { guilds: Guild[] }) {
             value={filter.query}
             onChange={(e) => setFilter({ ...filter, query: e.target.value })}
           />
+        </div>
+        <div>
+          <label htmlFor="guild-region">Location</label>
+          <select
+            id="guild-region"
+            className={textInput}
+            value={filter.region}
+            onChange={(e) => setFilter({ ...filter, region: e.target.value })}
+          >
+            <option value="">All locations</option>
+            {regions.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
         </div>
         <label className="flex min-h-11 items-center gap-2 font-semibold">
           <input
