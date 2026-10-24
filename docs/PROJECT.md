@@ -9,11 +9,11 @@
 3. `/quests` 게시판 → 신청 → 작업 완료 시 보상 지급
 
 ## 제외 범위
-로그인(현재 유저는 seed의 `u-me` 고정), 실제 결제, GPS, 길드 랭킹/연합/경매, 평판 시스템.
+로그인·세션·쿠키(사용자는 닉네임+4자리 PIN 프로필로 구분, `u-me` 고정 유저는 폐지), 실제 결제, GPS, 길드 랭킹/연합/경매, 평판 시스템.
 
 ## 스택
 Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design/tailwind-theme.css`). 데이터는 서버 SQLite(libSQL, `src/lib/db.ts`)에 두고 첫 접속 때 seed를 넣는다. 브라우저는 `/api/data/*`(길드·일감·지갑)로 읽는다. 능력 검사 프로필(닉네임+PIN)은 별도 `profiles` 스토어에 두고 `/api/scan*`, `/api/profile/lookup`으로만 접근한다(브라우저 읽기 비허용). 스펙은 `docs/specs/ability-test.md`.
-로컬은 `local.db` 파일, Vercel은 Turso(`TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`)를 쓴다. 현재 유저가 고정이라 모든 방문자가 같은 데이터를 공유한다.
+로컬은 `local.db` 파일, Vercel은 Turso(`TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`)를 쓴다. 사용자는 닉네임+PIN 프로필(`profiles` 스토어, 스펙은 `docs/specs/ability-test.md` 3절)로 구분하고, 지갑·길드 소속도 프로필 id에 귀속한다. seed의 `u-me`는 더 이상 현재 유저가 아니다.
 `ANTHROPIC_API_KEY`는 서버에만 둔다(`.env.local`, 예시는 `.env.example`).
 기본 모델 `claude-sonnet-5-5`.
 
@@ -40,8 +40,8 @@ Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design
 
 ## 구현 현황
 - [x] 뼈대, 공유 타입, seed, SQLite(libSQL) 읽기 서비스, 화면 틀
-- [x] 능력 검사(A): 닉네임+PIN 프로필, 적응형 질문, 근거 검증, 태그 매칭, `/scan/lookup` — 실제 Claude 호출은 아직 미검증(단위 테스트는 mock). 고정 유저 `u-me`(지갑·길드)와는 의도적으로 분리
-- [ ] 길드 검색 필터 / 가입 (A)
+- [x] 능력 검사(A): 닉네임+PIN 프로필, 적응형 질문, 근거 검증, 태그 매칭, `/scan/lookup` — 실제 Claude 호출은 아직 미검증(단위 테스트는 mock). 길드·지갑은 프로필 id에 귀속(길드는 `docs/specs/guild.md`)
+- [x] 길드 검색·필터, 모집, 생성, 가입·탈퇴(가입비 $35, 시작 크레딧 $100) (A) — 스펙 `docs/specs/guild.md`. 가입비는 B의 `ledger.debit`(`guild_fee`)으로 차감하고, 지갑이 없는 프로필은 첫 가입 때 $100로 만든다
 - [x] 더미 충전, debit/credit, 거래 내역 (B) — `POST /api/me/wallet/charge`, `GET /api/me/transactions`
 - [x] 퀘스트 검색 / 신청 / 완료 (B) — 검색은 클라이언트 필터, `POST /api/quests/:id/apply`(신청 즉시 배정), `POST /api/quests/:id/complete`(보상은 담당자 지갑에 바로 지급)
 

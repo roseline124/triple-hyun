@@ -17,7 +17,10 @@ export const seedGuilds = (): Guild[] => [
     tags: ["Technical writing", "Developer content", "AI review"],
     ownerId: "u-2",
     memberIds: ["u-2"],
-    joinFee: 5,
+    joinFee: 35,
+    recruiting: true,
+    maxMembers: 20,
+    lookingFor: ["Developer advocate", "Localization"],
   },
   {
     id: "g-2",
@@ -27,7 +30,10 @@ export const seedGuilds = (): Guild[] => [
     tags: ["QA automation", "Support ops", "Startups"],
     ownerId: "u-3",
     memberIds: ["u-3"],
-    joinFee: 3,
+    joinFee: 35,
+    recruiting: true,
+    maxMembers: 12,
+    lookingFor: ["Test automation"],
   },
 ];
 

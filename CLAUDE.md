@@ -37,6 +37,7 @@
 - API 키는 서버에만 둔다. `NEXT_PUBLIC_`, `VITE_`, 브라우저 번들에 넣지 않는다.
 - 입력, 로딩, 빈 결과, 실패, 성공, 재시도 상태를 구현한다. 긴 AI 호출에는 진행 상태·취소/타임아웃을 검토한다.
 - UI는 `frontend-design`, React는 `vercel-react-best-practices`, React Native/Expo는 `vercel-react-native-skills`를 필요한 때만 읽는다.
+- 모든 UI 구현은 `docs/design/DESIGN-BIBLE.md`를 따른다. 색·글꼴·반경·간격은 토큰만 쓰고, 애매하면 `docs/design/reference/guild-detail.html`과 똑같이 만든다. 토큰에 없는 값은 화면에서 만들지 않는다. 문서 끝의 PR 체크리스트로 확인한다.
 - 디자인은 핵심 시연 화면 한 곳에 집중한다. 읽기 쉬운 글자, 대비, 키보드 포커스, 좁은 화면의 주요 행동을 확인한다.
 - 시간 부족 시 기능을 줄인다. 동작하지 않는 버튼, 가짜 성공 응답, 숨긴 오류로 완성된 척하지 않는다.
 

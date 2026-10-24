@@ -3,8 +3,21 @@ import type { ReactNode } from "react";
 export const outlineButton =
   "rounded-pill border-2 border-brown-950 bg-transparent px-6 py-2 min-h-11 font-bold text-brown-950 hover:bg-sand-300 focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brown-950 disabled:cursor-not-allowed disabled:opacity-55";
 
+export const primaryButton =
+  "rounded-pill bg-brown-950 px-6 py-3 min-h-11 font-bold text-cream-100 hover:bg-brown-800 focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-brown-950 disabled:cursor-not-allowed disabled:opacity-55";
+
 export const textInput =
   "block w-full min-h-11 rounded-input border-2 border-brown-950 bg-white px-3 py-2 text-body text-brown-950";
+
+/** 바이블 7절 Success: 직전 행동과 같은 동사로 결과를 알린다. */
+export function SuccessTile({ title, children }: { title: string; children?: ReactNode }) {
+  return (
+    <div role="status" className="my-4 rounded-tile border-2 border-success bg-success-soft p-4">
+      <p className="m-0 font-bold text-success">{title}</p>
+      {children && <p className="mt-1 mb-0 text-small text-brown-950">{children}</p>}
+    </div>
+  );
+}
 
 /** 바이블 7절 Error: danger-soft 면 + 2px danger 윤곽선, 제목은 무엇이 실패했는지, 본문은 무엇을 하면 되는지. */
 export function ErrorTile({
