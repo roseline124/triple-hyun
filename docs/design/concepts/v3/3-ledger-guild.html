@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept 3 Guild edition: Ledger — Guild Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens: same as v2 Ledger. Guild kit added: charter document, wax seal, rank ladder ===== */
+:root {
+  --color-paper: #FAF6F8;
+  --color-surface: #FFFFFF;
+  --color-plum: #4F1F4A;
+  --color-plum-hover: #3A1536;
+  --color-plum-soft: #F0E3EE;
+  --color-rule: #E3D3DF;
+  --color-muted: #6A4C66;
+  --color-marigold: #E8A317;
+  --color-marigold-deep: #B97F06;
+  --color-marigold-soft: #FCEBC4;
+  --color-paid: #1F6B45;
+  --color-paid-soft: #DDF1E5;
+  --font-slab: "Zilla Slab", Georgia, serif;
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --radius: 6px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-paper); color: var(--color-plum); font: 16px/1.6 var(--font-body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--color-plum); outline-offset: 3px; }
+.wrap { max-width: 66rem; margin: 0 auto; padding: 0 1.25rem; }
+h1, h2, h3 { font-family: var(--font-slab); margin: 0; line-height: 1.15; font-weight: 700; }
+.muted { color: var(--color-muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+header.top { background: var(--color-plum); color: #fff; }
+header.top .wrap { display: flex; align-items: center; gap: 1.75rem; padding-block: .85rem; flex-wrap: wrap; }
+.brand { font-family: var(--font-slab); font-weight: 700; font-size: 1.4rem; text-decoration: none; }
+nav { display: flex; gap: 1.25rem; flex: 1; white-space: nowrap; }
+nav a { text-decoration: none; padding-block: .25rem; border-bottom: 3px solid transparent; color: #E8D3E4; font-weight: 500; }
+nav a:hover { color: #fff; }
+nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--color-marigold); }
+.wallet { font-weight: 600; background: rgba(255,255,255,.12); padding: .25rem .8rem; border-radius: var(--radius); }
+header.top :focus-visible { outline-color: #fff; }
+
+.top-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; padding-block: 2.25rem 2rem; align-items: start; }
+
+/* charter document */
+.charter { position: relative; background: var(--color-surface); padding: 2.4rem 2.4rem 3rem; text-align: center; box-shadow: 0 1px 0 var(--color-rule), 0 14px 28px rgba(79,31,74,.12); }
+.charter::before { content: ""; position: absolute; inset: 10px; border: 3px double var(--color-plum); pointer-events: none; }
+.corner { position: absolute; width: 26px; height: 26px; border: 3px solid var(--color-marigold); }
+.corner.tl { top: 18px; left: 18px; border-right: 0; border-bottom: 0; } .corner.tr { top: 18px; right: 18px; border-left: 0; border-bottom: 0; }
+.corner.bl { bottom: 18px; left: 18px; border-right: 0; border-top: 0; } .corner.br { bottom: 18px; right: 18px; border-left: 0; border-top: 0; }
+.charter .kind { font-family: var(--font-slab); font-style: italic; font-weight: 500; font-size: 1.15rem; color: var(--color-muted); margin: 0; }
+.charter .shield { width: 54px; height: 64px; margin: .7rem auto .4rem; display: block; }
+.charter h1 { font-size: clamp(2rem, 4.6vw, 3.2rem); }
+.charter .text { max-width: 31rem; margin: .9rem auto 0; }
+.rule { height: 0; border: 0; border-top: 2px solid var(--color-rule); margin: 1.4rem auto; width: 40%; position: relative; overflow: visible; }
+.rule::after { content: ""; position: absolute; left: 50%; top: -7px; width: 12px; height: 12px; background: var(--color-marigold); transform: translateX(-50%) rotate(45deg); }
+.signed { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+.signed div { min-width: 7rem; }
+.signed .sig { font-family: var(--font-slab); font-style: italic; font-weight: 500; font-size: 1.45rem; line-height: 1.2; border-bottom: 1px solid var(--color-plum); padding-bottom: .1rem; }
+.signed small { color: var(--color-muted); }
+.wax { position: absolute; right: 2.2rem; bottom: -34px; width: 104px; height: 128px; filter: drop-shadow(0 6px 6px rgba(79,31,74,.3)); }
+.cta { margin-top: 1.6rem; }
+.btn { font: inherit; font-weight: 600; border: 2px solid var(--color-plum); background: var(--color-plum); color: #fff; border-radius: var(--radius); padding: .7rem 1.5rem; cursor: pointer; }
+.btn:hover { background: var(--color-plum-hover); }
+.btn.ghost { background: transparent; color: var(--color-plum); padding: .35rem 1rem; }
+.btn.ghost:hover { background: var(--color-plum-soft); }
+.fee { display: block; margin-top: .5rem; font-size: .92rem; }
+
+.side { display: grid; gap: 1.25rem; }
+.card { background: var(--color-surface); border: 1px solid var(--color-rule); border-radius: var(--radius); padding: 1.1rem 1.25rem; }
+.card h2 { font-size: 1.15rem; margin-bottom: .6rem; }
+.card > svg { display: block; width: 100%; max-width: 26rem; height: auto; color: var(--color-marigold); }
+.card p { margin: .6rem 0 0; font-size: .95rem; }
+.ladder { list-style: none; margin: 0; padding: 0; counter-reset: rung; }
+.ladder li { counter-increment: rung; position: relative; padding: 0 0 1rem 2.6rem; }
+.ladder li:last-child { padding-bottom: 0; }
+.ladder li::before { content: counter(rung); position: absolute; left: 0; top: 0; width: 1.9rem; height: 1.9rem; border-radius: 50%; background: var(--color-plum); color: #fff; display: grid; place-items: center; font-family: var(--font-slab); font-weight: 700; }
+.ladder li:last-child::before { background: var(--color-marigold); color: var(--color-plum); }
+.ladder li + li::after { content: ""; position: absolute; left: .93rem; top: -1rem; height: 1rem; border-left: 2px solid var(--color-rule); }
+.ladder b { font-family: var(--font-slab); font-size: 1.1rem; display: block; line-height: 1.3; }
+.ladder span { font-size: .92rem; color: var(--color-muted); }
+
+table { width: 100%; border-collapse: collapse; background: var(--color-surface); border: 1px solid var(--color-rule); border-radius: var(--radius); overflow: hidden; }
+caption { text-align: left; font-family: var(--font-slab); font-weight: 700; font-size: 1.35rem; padding: 0 0 .7rem; }
+th { text-align: left; font-weight: 600; font-size: .9rem; color: var(--color-muted); background: var(--color-plum-soft); padding: .55rem .9rem; }
+td { padding: .8rem .9rem; border-top: 1px solid var(--color-rule); vertical-align: middle; }
+td.amt, th.amt { text-align: right; }
+td.amt { font-weight: 600; }
+.status { font-weight: 600; font-size: .9rem; padding: .1rem .6rem; border-radius: 999px; background: var(--color-paid-soft); color: var(--color-paid); white-space: nowrap; }
+.payouts { margin: 3rem 0 2.5rem; }
+.board td strong { font-family: var(--font-slab); font-size: 1.1rem; font-weight: 600; display: block; line-height: 1.3; }
+.board td small { color: var(--color-muted); }
+.reward { font-family: var(--font-slab); font-weight: 700; font-size: 1.2rem; color: var(--color-plum); }
+.note { margin: 2rem 0 3rem; font-size: .85rem; color: var(--color-muted); }
+.vh { position: absolute; left: -9999px; }
+
+@media (max-width: 800px) {
+  .top-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .charter { padding: 2rem 1.4rem 3.4rem; }
+  .wax { right: 1.2rem; width: 84px; height: 104px; bottom: -30px; }
+  .signed { gap: 1.2rem; }
+  th.hide-sm, td.hide-sm { display: none; }
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="shield" viewBox="0 0 100 120">
+      <path d="M50 4 L92 18 V58 C92 88 70 108 50 116 C30 108 8 88 8 58 V18 Z" fill="#4F1F4A"/>
+      <path d="M50 24 L76 76 H24 Z" fill="#E8A317"/>
+      <path d="M50 46 L63 74 H37 Z" fill="#4F1F4A"/>
+    </symbol>
+    <radialGradient id="waxg" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#E8A317"/><stop offset="1" stop-color="#B97F06"/></radialGradient>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#">Guild Quest</a>
+    <nav aria-label="Main">
+      <a href="#">Skill scan</a>
+      <a href="#" aria-current="page">Guilds</a>
+      <a href="#">Quest board</a>
+    </nav>
+    <span class="wallet" aria-label="Wallet balance">$1,240 credits</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="top-grid">
+    <section class="charter" aria-labelledby="g-name">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <p class="kind">Guild charter</p>
+      <svg class="shield" aria-hidden="true"><use href="#shield"/></svg>
+      <h1 id="g-name">Northwind Platform Guild</h1>
+      <p class="text muted">Ex-DevOps and backend engineers who take on infrastructure cleanups together, and look out for each other between gigs. 24 members, every identity checked.</p>
+      <hr class="rule">
+      <div class="signed" aria-label="Guild leads">
+        <div><div class="sig">Maya Kim</div><small>Site reliability</small></div>
+        <div><div class="sig">Daniel Reyes</div><small>Backend, Go</small></div>
+        <div><div class="sig">Sofia Park</div><small>Platform, Kubernetes</small></div>
+      </div>
+      <div class="cta">
+        <button class="btn" type="button">Join the guild</button>
+        <span class="fee muted">$40 one-time fee</span>
+      </div>
+      <svg class="wax" viewBox="0 0 104 128" role="img" aria-label="Verified guild seal">
+        <path d="M30 70 L16 124 L36 112 L48 126 L56 80 Z" fill="#B97F06"/>
+        <path d="M74 70 L88 124 L68 112 L56 126 L48 80 Z" fill="#E8A317"/>
+        <path d="M52 4 C66 2 76 8 84 16 C96 20 102 34 98 46 C104 58 98 72 86 78 C80 90 64 96 52 92 C38 98 24 90 20 78 C8 72 4 56 10 46 C4 32 14 20 24 16 C32 8 42 6 52 4 Z" fill="url(#waxg)"/>
+        <circle cx="52" cy="48" r="30" fill="none" stroke="#B97F06" stroke-width="3"/>
+        <g transform="translate(34 28)"><svg width="36" height="40" viewBox="0 0 100 120"><path d="M50 4 L92 18 V58 C92 88 70 108 50 116 C30 108 8 88 8 58 V18 Z" fill="#4F1F4A"/><path d="M50 30 L76 78 H24 Z" fill="#E8A317"/></svg></g>
+      </svg>
+    </section>
+
+    <div class="side">
+      <section class="card" aria-labelledby="tally-h">
+        <h2 id="tally-h">57 quests finished</h2>
+        <svg viewBox="0 0 336 112" role="img" aria-label="Tally marks showing 57 finished quests">
+          <defs>
+            <g id="five" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M6 6V44M18 6V44M30 6V44M42 6V44"/><path d="M0 36L48 12"/></g>
+            <g id="two" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M6 6V44M18 6V44"/></g>
+          </defs>
+          <use href="#five" x="0" y="0"/><use href="#five" x="56" y="0"/><use href="#five" x="112" y="0"/><use href="#five" x="168" y="0"/><use href="#five" x="224" y="0"/>
+          <use href="#five" x="0" y="56"/><use href="#five" x="56" y="56"/><use href="#five" x="112" y="56"/><use href="#five" x="168" y="56"/><use href="#five" x="224" y="56"/>
+          <use href="#five" x="280" y="0"/><use href="#two" x="280" y="56"/>
+        </svg>
+        <p>Rated <b>4.8 out of 5</b> by clients. The median payout arrives <b>2 days</b> after delivery.</p>
+      </section>
+      <section class="card" aria-labelledby="rank-h">
+        <h2 id="rank-h">How ranks work</h2>
+        <ol class="ladder">
+          <li><b>Apprentice</b><span>Join and finish your first quest with a guild lead.</span></li>
+          <li><b>Journeyman</b><span>Finish 10 quests and get paid on time.</span></li>
+          <li><b>Master</b><span>Finish 25 quests and lead one for the guild.</span></li>
+        </ol>
+      </section>
+    </div>
+  </div>
+
+  <section class="payouts">
+    <table>
+      <caption>Recent payouts</caption>
+      <thead><tr><th scope="col">Quest</th><th scope="col" class="hide-sm">Paid to</th><th scope="col" class="hide-sm">Date</th><th scope="col" class="amt">Amount</th><th scope="col">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Terraform audit for a 40-service stack</td><td class="hide-sm">Daniel R.</td><td class="hide-sm num">Oct 21, 2026</td><td class="amt num">$1,800</td><td><span class="status">Paid</span></td></tr>
+        <tr><td>Kubernetes cost review</td><td class="hide-sm">Sofia P.</td><td class="hide-sm num">Oct 16, 2026</td><td class="amt num">$2,400</td><td><span class="status">Paid</span></td></tr>
+        <tr><td>Postgres failover drill</td><td class="hide-sm">Maya K.</td><td class="hide-sm num">Oct 9, 2026</td><td class="amt num">$1,350</td><td><span class="status">Paid</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="board">
+    <table>
+      <caption>Open quests</caption>
+      <thead><tr><th scope="col">Quest</th><th scope="col" class="hide-sm">Length</th><th scope="col" class="hide-sm">People</th><th scope="col" class="amt">Reward</th><th scope="col"><span class="vh">Action</span></th></tr></thead>
+      <tbody>
+        <tr><td><strong>Migrate CI from Jenkins to GitHub Actions</strong><small>Remote, posted 2 days ago</small></td><td class="hide-sm">2 weeks</td><td class="hide-sm num">2</td><td class="amt reward num">$3,200</td><td><button class="btn ghost" type="button">Apply</button></td></tr>
+        <tr><td><strong>Terraform audit for a 40-service stack</strong><small>Remote, posted 5 days ago</small></td><td class="hide-sm">1 week</td><td class="hide-sm num">1</td><td class="amt reward num">$1,800</td><td><button class="btn ghost" type="button">Apply</button></td></tr>
+        <tr><td><strong>On-call runbook rewrite</strong><small>Remote, posted today</small></td><td class="hide-sm">3 days</td><td class="hide-sm num">1</td><td class="amt reward num">$900</td><td><button class="btn ghost" type="button">Apply</button></td></tr>
+      </tbody>
+    </table>
+  </section>
+  <p class="note">Design preview with sample data. These guilds, people, payouts, ranks, and numbers are made up.</p>
+</main>
+</body>
+</html>

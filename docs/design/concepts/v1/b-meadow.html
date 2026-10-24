@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept B · Meadow — Guild Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens: Meadow (clean white · sage green · soft amber) ===== */
+:root {
+  --color-bg: #F6F9F5;
+  --color-surface: #FFFFFF;
+  --color-surface-tint: #EDF4EE;
+  --color-ink: #1B2A24;
+  --color-ink-muted: #51635A;
+  --color-border: #DCE6DE;
+  --color-primary: #2F6F4F;
+  --color-primary-hover: #245A40;
+  --color-primary-soft: #DDEFE3;
+  --color-accent: #F2B84B;
+  --color-accent-soft: #FFF3D6;
+  --color-accent-ink: #7A5200;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px rgba(27, 42, 36, .05);
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); color: var(--color-ink); font: 16px/1.6 var(--font-sans); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; line-height: 1.25; letter-spacing: -.01em; }
+.muted { color: var(--color-ink-muted); }
+
+.shell { display: grid; grid-template-columns: 15rem 1fr; min-height: 100vh; }
+.side { background: var(--color-surface); border-right: 1px solid var(--color-border); padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.brand { font-weight: 800; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; gap: .55rem; padding-inline: .5rem; }
+.brand-mark { width: 30px; height: 30px; border-radius: 10px; background: var(--color-primary); color: #fff; display: grid; place-items: center; }
+.side nav { display: flex; flex-direction: column; gap: .2rem; }
+.side nav a { padding: .6rem .75rem; border-radius: var(--radius-sm); text-decoration: none; font-weight: 600; color: var(--color-ink-muted); }
+.side nav a:hover { background: var(--color-surface-tint); }
+.side nav a[aria-current="page"] { background: var(--color-primary-soft); color: var(--color-primary-hover); }
+.wallet { margin-top: auto; background: var(--color-accent-soft); border-radius: var(--radius-md); padding: .9rem 1rem; }
+.wallet small { color: var(--color-accent-ink); font-weight: 600; }
+.wallet b { display: block; font-size: 1.4rem; }
+
+main { padding: 1.75rem 2rem 4rem; max-width: 62rem; }
+.crumbs { font-size: .9rem; margin: 0 0 1rem; }
+.head { display: flex; gap: 1.1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.crest { width: 64px; height: 64px; border-radius: var(--radius-md); background: var(--color-primary-soft); display: grid; place-items: center; font-size: 2rem; }
+.head h1 { font-size: 1.75rem; }
+.head .grow { flex: 1; min-width: 14rem; }
+.chips { display: flex; gap: .4rem; flex-wrap: wrap; margin-top: .4rem; }
+.chip { font-size: .8rem; font-weight: 700; padding: .15rem .6rem; border-radius: var(--radius-pill); background: var(--color-surface-tint); color: var(--color-ink-muted); border: 1px solid var(--color-border); }
+.chip.ok { background: var(--color-primary-soft); color: var(--color-primary-hover); border-color: transparent; }
+.btn { font: inherit; font-weight: 700; border: 0; border-radius: var(--radius-sm); padding: .7rem 1.4rem; background: var(--color-primary); color: #fff; cursor: pointer; }
+.btn:hover { background: var(--color-primary-hover); }
+.btn.ghost { background: var(--color-surface); color: var(--color-primary-hover); border: 1.5px solid var(--color-border); padding: .45rem 1rem; }
+.btn.ghost:hover { border-color: var(--color-primary); background: var(--color-primary-soft); }
+
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .9rem; margin-bottom: 1.75rem; }
+.stat { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 1rem; box-shadow: var(--shadow-card); }
+.stat span { font-size: .85rem; color: var(--color-ink-muted); font-weight: 500; }
+.stat b { display: block; font-size: 1.5rem; margin-top: .15rem; }
+.stat.hl { background: var(--color-primary); border-color: var(--color-primary); }
+.stat.hl span, .stat.hl b { color: #fff; }
+
+.cols { display: grid; grid-template-columns: 1fr 18rem; gap: 1.5rem; align-items: start; }
+h2 { font-size: 1.15rem; margin-bottom: .8rem; }
+.panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-card); }
+.row { display: grid; grid-template-columns: 1fr auto auto; gap: 1rem; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid var(--color-border); }
+.row:last-child { border-bottom: 0; }
+.row h3 { font-size: 1rem; }
+.row .meta { font-size: .875rem; color: var(--color-ink-muted); }
+.reward { font-weight: 800; background: var(--color-accent-soft); color: var(--color-accent-ink); padding: .2rem .7rem; border-radius: var(--radius-pill); border: 1px solid var(--color-accent); }
+.pad { padding: 1.1rem 1.25rem; }
+.member { display: flex; align-items: center; gap: .7rem; padding: .4rem 0; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--color-primary-soft); color: var(--color-primary-hover); display: grid; place-items: center; font-weight: 700; font-size: .8rem; }
+.member small { display: block; color: var(--color-ink-muted); line-height: 1.3; }
+.note { margin-top: 2rem; padding: .7rem 1rem; border: 1px dashed var(--color-border); border-radius: var(--radius-sm); font-size: .85rem; color: var(--color-ink-muted); }
+.stack > * + * { margin-top: 1rem; }
+
+@media (max-width: 860px) {
+  .shell { grid-template-columns: 1fr; }
+  .side { flex-direction: row; flex-wrap: wrap; align-items: center; border-right: 0; border-bottom: 1px solid var(--color-border); padding: .75rem 1rem; gap: .75rem 1rem; }
+  .side nav { flex-direction: row; flex-wrap: wrap; }
+  .wallet { margin: 0 0 0 auto; padding: .4rem .8rem; }
+  .wallet b { display: inline; font-size: 1rem; margin-left: .35rem; }
+  main { padding: 1.25rem 1rem 3rem; }
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .cols { grid-template-columns: 1fr; }
+  .row { grid-template-columns: 1fr auto; }
+  .row .btn { grid-column: 1 / -1; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="side">
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true">🌱</span>Guild Quest</a>
+    <nav aria-label="Main">
+      <a href="#">Skill scan</a>
+      <a href="#" aria-current="page">Guilds</a>
+      <a href="#">Quest board</a>
+      <a href="#">Wallet</a>
+    </nav>
+    <div class="wallet"><small>Credits</small><b>$1,240</b></div>
+  </div>
+
+  <main>
+    <p class="crumbs muted"><a href="#">Guilds</a> / Northwind Platform Guild</p>
+    <div class="head">
+      <div class="crest" aria-hidden="true">🌿</div>
+      <div class="grow">
+        <h1>Northwind Platform Guild</h1>
+        <div class="chips">
+          <span class="chip ok">✓ Verified guild</span>
+          <span class="chip">Infrastructure</span>
+          <span class="chip">Backend</span>
+        </div>
+      </div>
+      <button class="btn" type="button">Join for $40</button>
+    </div>
+    <p class="muted" style="max-width:40rem;margin:0 0 1.5rem">A small crew of ex-DevOps and backend engineers who take on infrastructure cleanups together, and look out for each other between gigs.</p>
+
+    <div class="grid" role="list" aria-label="Guild track record">
+      <div class="stat hl" role="listitem"><span>Members</span><b>24</b></div>
+      <div class="stat" role="listitem"><span>Quests completed</span><b>57</b></div>
+      <div class="stat" role="listitem"><span>Median payout time</span><b>2 days</b></div>
+      <div class="stat" role="listitem"><span>Client rating</span><b>4.8 / 5</b></div>
+    </div>
+
+    <div class="cols">
+      <section aria-labelledby="open-quests">
+        <h2 id="open-quests">Open quests</h2>
+        <div class="panel">
+          <div class="row">
+            <div><h3>Migrate CI from Jenkins to GitHub Actions</h3><div class="meta">Remote · ~2 weeks · 2 members needed</div></div>
+            <span class="reward">$3,200</span><button class="btn ghost" type="button">Apply</button>
+          </div>
+          <div class="row">
+            <div><h3>Terraform audit for a 40-service stack</h3><div class="meta">Remote · ~1 week · 1 member needed</div></div>
+            <span class="reward">$1,800</span><button class="btn ghost" type="button">Apply</button>
+          </div>
+          <div class="row">
+            <div><h3>On-call runbook rewrite</h3><div class="meta">Remote · ~3 days · 1 member needed</div></div>
+            <span class="reward">$900</span><button class="btn ghost" type="button">Apply</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="stack" aria-label="About this guild">
+        <div class="panel pad">
+          <h2>Members</h2>
+          <div class="member"><span class="avatar" aria-hidden="true">MK</span><div>Maya K.<small>Guild lead · SRE</small></div></div>
+          <div class="member"><span class="avatar" aria-hidden="true">DR</span><div>Daniel R.<small>Backend · Go</small></div></div>
+          <div class="member"><span class="avatar" aria-hidden="true">SP</span><div>Sofia P.<small>Platform · Kubernetes</small></div></div>
+        </div>
+        <div class="panel pad">
+          <p style="margin:0">“They scoped it honestly, finished a day early, and the handoff docs were better than ours.”</p>
+          <p class="muted" style="margin:.6rem 0 0;font-size:.875rem">— Engineering manager, Series B startup</p>
+        </div>
+      </aside>
+    </div>
+    <p class="note">Design preview with sample data. Not real guilds, clients, or reviews.</p>
+  </main>
+</div>
+</body>
+</html>

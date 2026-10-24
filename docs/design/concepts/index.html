@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guild Quest: design concepts (round 2)</title>
+<style>
+body { margin: 0; font: 16px/1.6 system-ui, -apple-system, sans-serif; color: #1c1c1c; background: #ececec; }
+main { max-width: 74rem; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+h1 { margin: 0 0 .25rem; }
+.lead { margin: 0 0 1.5rem; color: #4a4a4a; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr)); gap: 1.25rem; }
+.card { background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #d2d2d2; display: flex; flex-direction: column; }
+.card iframe { border: 0; width: 100%; height: 28rem; pointer-events: none; background: #fff; }
+.body { padding: 1rem 1.25rem 1.25rem; }
+.card h2 { margin: 0 0 .25rem; font-size: 1.15rem; }
+.card ul { margin: .5rem 0 .75rem; padding-left: 1.1rem; color: #4a4a4a; font-size: .95rem; }
+.swatches { display: flex; gap: 4px; margin: .5rem 0; }
+.swatches i { width: 28px; height: 28px; border-radius: 6px; border: 1px solid rgba(0,0,0,.15); }
+a { color: #1a4fd6; font-weight: 600; }
+a:focus-visible { outline: 3px solid #1a4fd6; outline-offset: 2px; }
+p.old { margin-top: 2rem; color: #4a4a4a; }
+</style>
+</head>
+<body>
+<main>
+  <h1>worktree: design concepts</h1>
+  <p class="lead"><strong>Chosen: Canopy (round 4, concept 1), set in Noto Sans.</strong> Rules and tokens: <code>../DESIGN-BIBLE.md</code>. Reference screen: <a href="../reference/guild-detail.html">reference/guild-detail.html</a>. Everything below is the exploration history.</p>
+  <h2 style="margin:1.5rem 0 .25rem">Round 4: worktree brand, from Dribbble hiring-platform references</h2>
+  <p class="lead">Trends taken: bento grids, bold color blocks, organic shapes. The tree mark doubles as a git branch graph.</p>
+  <div class="grid">
+    <article class="card">
+      <iframe src="v4/1-canopy.html" title="Canopy preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>1 Canopy</h2>
+        <div class="swatches" aria-hidden="true"><i style="background:#0D3326"></i><i style="background:#CDEB6B"></i><i style="background:#FF8040"></i><i style="background:#BDE2F2"></i><i style="background:#FFE27A"></i></div>
+        <ul><li>Bento tiles with different shapes and colors</li><li>Leaf-shaped rating and reward badges</li><li>57 dots, one per finished quest</li></ul>
+        <a href="v4/1-canopy.html">Open full screen</a>
+      </div>
+    </article>
+    <article class="card">
+      <iframe src="v4/2-branch.html" title="Branch preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>2 Branch</h2>
+        <div class="swatches" aria-hidden="true"><i style="background:#F4F7F2"></i><i style="background:#1F9D55"></i><i style="background:#E0580A"></i><i style="background:#2F6FED"></i><i style="background:#D6409F"></i></div>
+        <ul><li>Quests and payouts drawn as a git graph</li><li>One line color per open quest</li><li>Made for IT people, with a nod to git worktree</li></ul>
+        <a href="v4/2-branch.html">Open full screen</a>
+      </div>
+    </article>
+    <article class="card">
+      <iframe src="v4/3-rings.html" title="Rings preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>3 Rings</h2>
+        <div class="swatches" aria-hidden="true"><i style="background:#FF7A2F"></i><i style="background:#0B3C49"></i><i style="background:#FFE27A"></i><i style="background:#D3E6D8"></i></div>
+        <ul><li>Tree-ring hero on a tangerine block</li><li>Members placed on rings by rank</li><li>Loudest and most memorable</li></ul>
+        <a href="v4/3-rings.html">Open full screen</a>
+      </div>
+    </article>
+  </div>
+
+  <h2 style="margin:3rem 0 .25rem">Earlier rounds (Guild Quest name)</h2>
+  <h2 style="margin:1rem 0 .25rem;font-size:1.1rem">Round 2</h2>
+  <p class="lead">Same screen (guild detail), three directions. Open each one at full size. All data is sample data.</p>
+  <div class="grid">
+    <article class="card">
+      <iframe src="1-hallmark.html" title="Concept 1 preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>1 Hallmark</h2>
+        <div class="swatches" aria-hidden="true"><i style="background:#F1F5F0"></i><i style="background:#12402B"></i><i style="background:#F5B724"></i><i style="background:#C73A22"></i></div>
+        <ul><li>Workshop signage: forest, saffron, stamp red</li><li>Memorable part: the guild seal and hard-shadow sign</li><li>Bold and friendly, closest to a craft guild</li></ul>
+        <a href="1-hallmark.html">Open full screen</a>
+      </div>
+    </article>
+    <article class="card">
+      <iframe src="2-common-room.html" title="Concept 2 preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>2 Common Room</h2>
+        <div class="swatches" aria-hidden="true"><i style="background:#EEF0FB"></i><i style="background:#25288C"></i><i style="background:#F2664F"></i><i style="background:#FFE08A"></i></div>
+        <ul><li>Periwinkle, indigo, coral, butter</li><li>Memorable part: live guild activity as chat bubbles</li><li>Warmest through people, softest shapes</li></ul>
+        <a href="2-common-room.html">Open full screen</a>
+      </div>
+    </article>
+    <article class="card">
+      <iframe src="3-ledger.html" title="Concept 3 preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>3 Ledger</h2>
+        <div class="swatches" aria-hidden="true"><i style="background:#FAF6F8"></i><i style="background:#4F1F4A"></i><i style="background:#E8A317"></i><i style="background:#1F6B45"></i></div>
+        <ul><li>Plum ink, marigold tally, slab serif</li><li>Memorable part: payout ledger and tally marks</li><li>Most trustworthy because money is visible</li></ul>
+        <a href="3-ledger.html">Open full screen</a>
+      </div>
+    </article>
+  </div>
+  <h2 style="margin:2.5rem 0 .25rem">Guild edition: same three, with the guild kit added</h2>
+  <p class="lead">Each one keeps its v2 palette and type. Added: crests, banners, seals, ranks, notice board, charter.</p>
+  <div class="grid">
+    <article class="card">
+      <iframe src="v3/1-hallmark-guild.html" title="Concept 1 guild edition preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>1 Hallmark, guild edition</h2>
+        <ul><li>Bunting, sign hanging from an iron bracket, crest, motto ribbon</li><li>Rank stamps on members: Apprentice, Journeyman, Master</li><li>Quest tickets with rivets</li></ul>
+        <a href="v3/1-hallmark-guild.html">Open full screen</a>
+      </div>
+    </article>
+    <article class="card">
+      <iframe src="v3/2-common-room-guild.html" title="Concept 2 guild edition preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>2 Common Room, guild edition</h2>
+        <ul><li>Hanging banner on a rod, arch-shaped portraits</li><li>Quests pinned to a cork notice board</li><li>Keeps the live activity feed</li></ul>
+        <a href="v3/2-common-room-guild.html">Open full screen</a>
+      </div>
+    </article>
+    <article class="card">
+      <iframe src="v3/3-ledger-guild.html" title="Concept 3 guild edition preview" tabindex="-1"></iframe>
+      <div class="body">
+        <h2>3 Ledger, guild edition</h2>
+        <ul><li>Guild charter with double border, signatures, wax seal</li><li>Rank ladder (a real sequence, so numbered)</li><li>Keeps the payout ledger and tally marks</li></ul>
+        <a href="v3/3-ledger-guild.html">Open full screen</a>
+      </div>
+    </article>
+  </div>
+  <p class="old">Round 1 is kept in <a href="v1/index.html">v1/</a>.</p>
+</main>
+</body>
+</html>

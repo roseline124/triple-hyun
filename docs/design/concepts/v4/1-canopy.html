@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>worktree: Concept 1 Canopy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Unbounded:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens: Canopy (pine, lime, tangerine, sky, lemon) ===== */
+:root {
+  --color-bg: #F3F5F0;
+  --color-surface: #FFFFFF;
+  --color-pine: #0D3326;
+  --color-pine-soft: #C9DDD0;
+  --color-lime: #CDEB6B;
+  --color-tangerine: #FF8040;
+  --color-sky: #BDE2F2;
+  --color-lemon: #FFE27A;
+  --color-muted: #4A6357;
+  --font-display: "Unbounded", "Arial Black", sans-serif;
+  --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --radius-tile: 28px;
+  --radius-leaf: 999px 6px 999px 6px;
+  --gap: 14px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-bg); color: var(--color-pine); font: 17px/1.55 var(--font-body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--color-pine); outline-offset: 3px; }
+.wrap { max-width: 72rem; margin: 0 auto; padding: 0 1.25rem; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; line-height: 1.12; letter-spacing: -.02em; }
+.muted { color: var(--color-muted); }
+
+header.top .wrap { display: flex; align-items: center; gap: 1.5rem; padding-block: 1rem; flex-wrap: wrap; }
+.brand { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; text-decoration: none; display: flex; align-items: center; gap: .55rem; letter-spacing: -.03em; }
+.brand svg { color: var(--color-pine); }
+nav { display: flex; gap: .25rem; white-space: nowrap; }
+nav a { padding: .45rem 1rem; border-radius: 999px; text-decoration: none; font-weight: 600; }
+nav a:hover { background: var(--color-pine-soft); }
+nav a[aria-current="page"] { background: var(--color-pine); color: #fff; }
+.wallet { margin-left: auto; font-weight: 700; background: var(--color-lemon); padding: .35rem .95rem; border-radius: 999px; }
+
+.bento { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--gap); margin-block: .5rem 1.5rem; }
+.tile { border-radius: var(--radius-tile); padding: 1.6rem; position: relative; overflow: hidden; }
+.t-guild { grid-column: 1 / 8; grid-row: 1 / 3; background: var(--color-pine); color: #fff; border-radius: 40px; padding: 2.2rem; display: flex; flex-direction: column; justify-content: flex-end; min-height: 25rem; }
+.t-guild .art { position: absolute; top: 0; right: 0; width: 66%; height: 58%; pointer-events: none; }
+.t-guild h1 { font-weight: 800; font-size: clamp(1.9rem, 3.8vw, 3rem); position: relative; max-width: 13ch; }
+.t-guild p { position: relative; margin: .9rem 0 1.4rem; max-width: 31rem; color: #D5E5DA; font-size: 1.05rem; }
+.cta { position: relative; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.btn { font: inherit; font-weight: 700; background: var(--color-lime); color: var(--color-pine); border: 0; border-radius: 999px; padding: .85rem 1.7rem; cursor: pointer; }
+.btn:hover { background: #DDF58F; }
+.t-guild :focus-visible { outline-color: #fff; }
+.cta small { color: #D5E5DA; font-size: .95rem; }
+
+.t-people { grid-column: 8 / 13; background: var(--color-tangerine); border-radius: 160px 28px 28px 28px; padding: 2.4rem 1.6rem 1.6rem 3.2rem; }
+.t-people h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: .9rem; }
+.capsules { display: flex; gap: 6px; }
+.capsule { width: 46px; height: 74px; border-radius: 999px; display: grid; place-items: end center; padding-bottom: .55rem; font-weight: 800; font-size: .9rem; position: relative; }
+.c1 { background: var(--color-lemon); } .c2 { background: var(--color-sky); } .c3 { background: var(--color-lime); } .c4 { background: #fff; } .c5 { background: var(--color-pine); color: #fff; font-size: .75rem; }
+.live { position: absolute; top: 9px; left: 50%; width: 11px; height: 11px; margin-left: -5.5px; border-radius: 50%; background: var(--color-pine); border: 2.5px solid #fff; }
+.t-people p { margin: .9rem 0 0; font-weight: 600; }
+.t-people p span { font-weight: 500; }
+
+.t-rating { grid-column: 8 / 13; background: var(--color-sky); }
+.leaves { display: flex; gap: .35rem; margin: .5rem 0 .5rem; }
+.leaf { width: 30px; height: 30px; border-radius: var(--radius-leaf); background: var(--color-pine); }
+.leaf.part { background: linear-gradient(90deg, var(--color-pine) 80%, rgba(13,51,38,.2) 80%); }
+.t-rating strong { font-family: var(--font-display); font-weight: 700; font-size: 1.4rem; }
+.t-rating span { display: block; }
+
+.t-pay { grid-column: 1 / 5; background: var(--color-lemon); border-radius: 28px 28px 110px 28px; }
+.t-pay strong { display: block; font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.1; }
+.t-pay span { display: block; margin-top: .5rem; }
+.t-rank { grid-column: 5 / 9; background: var(--color-surface); border: 2px solid var(--color-pine); }
+.t-rank h2 { font-size: 1.05rem; margin-bottom: .7rem; }
+.rungs { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.rungs li { display: grid; grid-template-columns: 34px 1fr; gap: .7rem; align-items: center; }
+.rungs i { border-radius: 50%; background: var(--color-pine); justify-self: center; }
+.rungs li:nth-child(1) i { width: 12px; height: 12px; } .rungs li:nth-child(2) i { width: 22px; height: 22px; background: #5E8F6E; } .rungs li:nth-child(3) i { width: 34px; height: 34px; background: var(--color-lime); border: 3px solid var(--color-pine); }
+.rungs b { display: block; line-height: 1.2; } .rungs small { color: var(--color-muted); font-size: .9rem; line-height: 1.3; display: block; }
+.t-done { grid-column: 9 / 13; background: var(--color-lime); }
+.t-done h2 { font-size: 1.05rem; margin-bottom: .75rem; }
+.dots { display: grid; grid-template-columns: repeat(19, 1fr); gap: 5px; }
+.dots i { aspect-ratio: 1; border-radius: 50%; background: var(--color-pine); }
+.t-done p { margin: .8rem 0 0; font-size: .95rem; }
+
+h2.section { font-size: 1.5rem; margin: 2rem 0 1rem; }
+.quests { background: var(--color-surface); border-radius: 36px; padding: .5rem 1.75rem; margin-bottom: 1rem; }
+.quest { display: grid; grid-template-columns: 1fr auto auto; gap: .5rem 1.25rem; align-items: center; padding: 1.15rem 0; border-top: 2px solid var(--color-bg); }
+.quest:first-child { border-top: 0; }
+.quest h3 { font-family: var(--font-body); font-weight: 700; font-size: 1.15rem; letter-spacing: 0; }
+.facts { list-style: none; margin: .2rem 0 0; padding: 0; display: flex; gap: .35rem 1rem; flex-wrap: wrap; color: var(--color-muted); font-size: .95rem; }
+.reward { font-family: var(--font-display); font-weight: 700; background: var(--color-lime); border-radius: var(--radius-leaf); padding: .45rem 1.3rem; }
+.btn-line { font: inherit; font-weight: 700; background: transparent; color: var(--color-pine); border: 2px solid var(--color-pine); border-radius: 999px; padding: .45rem 1.2rem; cursor: pointer; }
+.btn-line:hover { background: var(--color-lime); }
+.note { margin: 1.25rem 0 3rem; font-size: .85rem; color: var(--color-muted); }
+
+@media (max-width: 860px) {
+  .bento { grid-template-columns: 1fr; }
+  .tile, .t-guild, .t-people, .t-rating, .t-pay, .t-rank, .t-done { grid-column: 1 / -1; grid-row: auto; }
+  .t-guild { min-height: 22rem; padding: 1.6rem; }
+  .t-people { border-radius: 120px 28px 28px 28px; padding-left: 2.6rem; }
+  .quest { grid-template-columns: 1fr auto; }
+  .quest .btn-line { grid-column: 1 / -1; justify-self: start; }
+  .wallet { margin-left: 0; }
+  .dots { gap: 4px; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#"><svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M16 29V13"/><path d="M16 22L8 15"/><path d="M16 17L24 10"/></g><g fill="currentColor"><circle cx="16" cy="9" r="3.4"/><circle cx="8" cy="12" r="3.4"/><circle cx="24" cy="7" r="3.4"/></g></svg>worktree</a>
+    <nav aria-label="Main">
+      <a href="#">Skill scan</a>
+      <a href="#" aria-current="page">Guilds</a>
+      <a href="#">Quest board</a>
+    </nav>
+    <span class="wallet" aria-label="Wallet balance">$1,240 credits</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="bento">
+    <section class="tile t-guild" aria-labelledby="g-name">
+      <svg class="art" viewBox="0 0 600 400" preserveAspectRatio="xMaxYMin slice" aria-hidden="true">
+        <circle cx="500" cy="90" r="120" fill="#CDEB6B"/>
+        <path d="M330 -10 H450 V110 A60 60 0 0 1 330 110 Z" fill="#FF8040" transform="translate(-20 -10)"/>
+        <path d="M545 210 C 545 150, 600 150, 600 210 C 600 270, 545 270, 545 210 Z" fill="#BDE2F2"/>
+        <g fill="none" stroke="#0D3326" stroke-width="7" stroke-linecap="round"><path d="M500 220 V120"/><path d="M500 175 L452 128"/><path d="M500 145 L548 98"/></g>
+        <g fill="#0D3326"><circle cx="500" cy="106" r="15"/><circle cx="446" cy="122" r="15"/><circle cx="554" cy="92" r="15"/></g>
+      </svg>
+      <h1 id="g-name">Northwind Platform Guild</h1>
+      <p>Ex-DevOps and backend engineers who take on infrastructure cleanups together, and look out for each other between gigs.</p>
+      <div class="cta"><button class="btn" type="button">Join the guild</button><small>$40 one-time fee</small></div>
+    </section>
+
+    <section class="tile t-people" aria-labelledby="ppl-h">
+      <h2 id="ppl-h">Who's here</h2>
+      <div class="capsules" aria-hidden="true">
+        <span class="capsule c1">MK<i class="live"></i></span><span class="capsule c2">DR</span><span class="capsule c3">SP<i class="live"></i></span><span class="capsule c4">JL</span><span class="capsule c5">+20</span>
+      </div>
+      <p>24 members, 2 online now <span>Maya, Daniel, and Sofia lead the guild.</span></p>
+    </section>
+
+    <section class="tile t-rating" aria-labelledby="rate-h">
+      <h2 id="rate-h" style="font-size:1.05rem">Client rating</h2>
+      <div class="leaves" role="img" aria-label="4.8 out of 5 leaves"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf part"></i></div>
+      <strong>4.8 out of 5</strong><span>from clients who paid for finished quests</span>
+    </section>
+
+    <section class="tile t-pay" aria-label="Payout speed">
+      <strong>Paid in 2 days</strong>
+      <span>Median time from delivery to payout.</span>
+    </section>
+
+    <section class="tile t-rank" aria-labelledby="rank-h">
+      <h2 id="rank-h">How members grow</h2>
+      <ul class="rungs">
+        <li><i></i><div><b>Seedling</b><small>Finish your first quest</small></div></li>
+        <li><i></i><div><b>Sapling</b><small>Finish 10 quests</small></div></li>
+        <li><i></i><div><b>Oak</b><small>Finish 25 and lead one</small></div></li>
+      </ul>
+    </section>
+
+    <section class="tile t-done" aria-labelledby="done-h">
+      <h2 id="done-h">57 quests finished</h2>
+      <div class="dots" id="dots" role="img" aria-label="57 dots, one for each finished quest"></div>
+      <p>One dot per quest, since the guild started.</p>
+    </section>
+  </div>
+
+  <h2 class="section" id="open-quests">Open quests</h2>
+  <section class="quests" aria-labelledby="open-quests">
+    <article class="quest">
+      <div><h3>Migrate CI from Jenkins to GitHub Actions</h3><ul class="facts"><li>Remote</li><li>About 2 weeks</li><li>2 people needed</li></ul></div>
+      <span class="reward">$3,200</span><button class="btn-line" type="button">Apply</button>
+    </article>
+    <article class="quest">
+      <div><h3>Terraform audit for a 40-service stack</h3><ul class="facts"><li>Remote</li><li>About 1 week</li><li>1 person needed</li></ul></div>
+      <span class="reward">$1,800</span><button class="btn-line" type="button">Apply</button>
+    </article>
+    <article class="quest">
+      <div><h3>On-call runbook rewrite</h3><ul class="facts"><li>Remote</li><li>About 3 days</li><li>1 person needed</li></ul></div>
+      <span class="reward">$900</span><button class="btn-line" type="button">Apply</button>
+    </article>
+  </section>
+  <p class="note">Design preview with sample data. These guilds, people, ranks, and numbers are made up.</p>
+</main>
+<script>
+  const dots = document.getElementById("dots");
+  for (let i = 0; i < 57; i++) dots.appendChild(document.createElement("i"));
+</script>
+</body>
+</html>

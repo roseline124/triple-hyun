@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Concept 3: Ledger — Guild Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600&family=Zilla+Slab:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Tokens: Ledger (plum ink, marigold tally, rose-white paper) ===== */
+:root {
+  --color-paper: #FAF6F8;
+  --color-surface: #FFFFFF;
+  --color-plum: #4F1F4A;        /* ink, primary */
+  --color-plum-hover: #3A1536;
+  --color-plum-soft: #F0E3EE;
+  --color-rule: #E3D3DF;
+  --color-muted: #6A4C66;
+  --color-marigold: #E8A317;    /* tally marks, seal */
+  --color-marigold-soft: #FCEBC4;
+  --color-paid: #1F6B45;
+  --color-paid-soft: #DDF1E5;
+  --font-slab: "Zilla Slab", Georgia, serif;
+  --font-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --radius: 6px;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--color-paper); color: var(--color-plum); font: 16px/1.6 var(--font-body); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--color-plum); outline-offset: 3px; }
+.wrap { max-width: 66rem; margin: 0 auto; padding: 0 1.25rem; }
+h1, h2, h3 { font-family: var(--font-slab); margin: 0; line-height: 1.15; font-weight: 700; }
+.muted { color: var(--color-muted); }
+.num { font-variant-numeric: tabular-nums; }
+
+header.top { background: var(--color-plum); color: #fff; }
+header.top .wrap { display: flex; align-items: center; gap: 1.75rem; padding-block: .85rem; flex-wrap: wrap; }
+.brand { font-family: var(--font-slab); font-weight: 700; font-size: 1.4rem; text-decoration: none; }
+nav { display: flex; gap: 1.25rem; flex: 1; white-space: nowrap; }
+nav a { text-decoration: none; padding-block: .25rem; border-bottom: 3px solid transparent; color: #E8D3E4; font-weight: 500; }
+nav a:hover { color: #fff; }
+nav a[aria-current="page"] { color: #fff; border-bottom-color: var(--color-marigold); }
+.wallet { font-weight: 600; background: rgba(255,255,255,.12); padding: .25rem .8rem; border-radius: var(--radius); }
+header.top :focus-visible { outline-color: #fff; }
+
+.charter { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2.5rem; padding-block: 2.5rem 2rem; align-items: start; }
+.charter h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); }
+.charter p { margin: .9rem 0 1.4rem; max-width: 30rem; }
+.btn { font: inherit; font-weight: 600; border: 2px solid var(--color-plum); background: var(--color-plum); color: #fff; border-radius: var(--radius); padding: .7rem 1.5rem; cursor: pointer; }
+.btn:hover { background: var(--color-plum-hover); }
+.btn.ghost { background: transparent; color: var(--color-plum); padding: .35rem 1rem; }
+.btn.ghost:hover { background: var(--color-plum-soft); }
+.fee { margin-left: .9rem; }
+
+.tally { background: var(--color-surface); border: 1px solid var(--color-rule); border-radius: var(--radius); padding: 1.1rem 1.25rem; }
+.tally h2 { font-size: 1.1rem; margin-bottom: .6rem; }
+.tally svg { display: block; width: 100%; max-width: 26rem; height: auto; color: var(--color-marigold); }
+.tally p { margin: .6rem 0 0; font-size: .95rem; }
+
+table { width: 100%; border-collapse: collapse; background: var(--color-surface); border: 1px solid var(--color-rule); border-radius: var(--radius); overflow: hidden; }
+caption { text-align: left; font-family: var(--font-slab); font-weight: 700; font-size: 1.35rem; padding: 0 0 .7rem; }
+th { text-align: left; font-weight: 600; font-size: .9rem; color: var(--color-muted); background: var(--color-plum-soft); padding: .55rem .9rem; }
+td { padding: .8rem .9rem; border-top: 1px solid var(--color-rule); vertical-align: middle; }
+td.amt, th.amt { text-align: right; }
+td.amt { font-weight: 600; }
+.status { font-weight: 600; font-size: .9rem; padding: .1rem .6rem; border-radius: 999px; background: var(--color-paid-soft); color: var(--color-paid); white-space: nowrap; }
+.payouts { margin-bottom: 2.5rem; }
+.board td strong { font-family: var(--font-slab); font-size: 1.1rem; font-weight: 600; display: block; line-height: 1.3; }
+.board td small { color: var(--color-muted); }
+.reward { font-family: var(--font-slab); font-weight: 700; font-size: 1.2rem; color: var(--color-plum); }
+
+.crew { display: flex; gap: 2rem; flex-wrap: wrap; margin: 2rem 0 1rem; padding-top: 1.25rem; border-top: 3px double var(--color-rule); }
+.crew h2 { font-size: 1.2rem; flex-basis: 100%; }
+.crew div { display: flex; flex-direction: column; }
+.crew small { color: var(--color-muted); }
+.note { margin: 1.5rem 0 3rem; font-size: .85rem; color: var(--color-muted); }
+
+@media (max-width: 760px) {
+  .charter { grid-template-columns: 1fr; gap: 1.5rem; }
+  .fee { display: block; margin: .6rem 0 0; }
+  th.hide-sm, td.hide-sm { display: none; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#">Guild Quest</a>
+    <nav aria-label="Main">
+      <a href="#">Skill scan</a>
+      <a href="#" aria-current="page">Guilds</a>
+      <a href="#">Quest board</a>
+    </nav>
+    <span class="wallet" aria-label="Wallet balance">$1,240 credits</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="charter" aria-labelledby="g-name">
+    <div>
+      <h1 id="g-name">Northwind Platform Guild</h1>
+      <p class="muted">Ex-DevOps and backend engineers who take on infrastructure cleanups together, and look out for each other between gigs. 24 members, identity checked.</p>
+      <button class="btn" type="button">Join the guild</button><span class="fee muted">$40 one-time fee</span>
+    </div>
+    <div class="tally">
+      <h2>57 quests finished</h2>
+      <svg viewBox="0 0 336 112" role="img" aria-label="Tally marks showing 57 finished quests">
+        <defs>
+          <g id="five" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+            <path d="M6 6V44M18 6V44M30 6V44M42 6V44"/><path d="M0 36L48 12"/>
+          </g>
+          <g id="two" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M6 6V44M18 6V44"/></g>
+        </defs>
+        <use href="#five" x="0" y="0"/><use href="#five" x="56" y="0"/><use href="#five" x="112" y="0"/><use href="#five" x="168" y="0"/><use href="#five" x="224" y="0"/>
+        <use href="#five" x="0" y="56"/><use href="#five" x="56" y="56"/><use href="#five" x="112" y="56"/><use href="#five" x="168" y="56"/><use href="#five" x="224" y="56"/>
+        <use href="#five" x="280" y="0"/><use href="#two" x="280" y="56"/>
+      </svg>
+      <p>Rated <b>4.8 out of 5</b> by clients. The median payout arrives <b>2 days</b> after delivery.</p>
+    </div>
+  </section>
+
+  <section class="payouts">
+    <table>
+      <caption>Recent payouts</caption>
+      <thead><tr><th scope="col">Quest</th><th scope="col" class="hide-sm">Paid to</th><th scope="col" class="hide-sm">Date</th><th scope="col" class="amt">Amount</th><th scope="col">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Terraform audit for a 40-service stack</td><td class="hide-sm">Daniel R.</td><td class="hide-sm num">Oct 21, 2026</td><td class="amt num">$1,800</td><td><span class="status">Paid</span></td></tr>
+        <tr><td>Kubernetes cost review</td><td class="hide-sm">Sofia P.</td><td class="hide-sm num">Oct 16, 2026</td><td class="amt num">$2,400</td><td><span class="status">Paid</span></td></tr>
+        <tr><td>Postgres failover drill</td><td class="hide-sm">Maya K.</td><td class="hide-sm num">Oct 9, 2026</td><td class="amt num">$1,350</td><td><span class="status">Paid</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="board">
+    <table>
+      <caption>Open quests</caption>
+      <thead><tr><th scope="col">Quest</th><th scope="col" class="hide-sm">Length</th><th scope="col" class="hide-sm">People</th><th scope="col" class="amt">Reward</th><th scope="col"><span class="visually-hidden" style="position:absolute;left:-9999px">Action</span></th></tr></thead>
+      <tbody>
+        <tr><td><strong>Migrate CI from Jenkins to GitHub Actions</strong><small>Remote, posted 2 days ago</small></td><td class="hide-sm">2 weeks</td><td class="hide-sm num">2</td><td class="amt reward num">$3,200</td><td><button class="btn ghost" type="button">Apply</button></td></tr>
+        <tr><td><strong>Terraform audit for a 40-service stack</strong><small>Remote, posted 5 days ago</small></td><td class="hide-sm">1 week</td><td class="hide-sm num">1</td><td class="amt reward num">$1,800</td><td><button class="btn ghost" type="button">Apply</button></td></tr>
+        <tr><td><strong>On-call runbook rewrite</strong><small>Remote, posted today</small></td><td class="hide-sm">3 days</td><td class="hide-sm num">1</td><td class="amt reward num">$900</td><td><button class="btn ghost" type="button">Apply</button></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="crew" aria-labelledby="crew-h">
+    <h2 id="crew-h">Guild leads</h2>
+    <div>Maya K.<small>Site reliability</small></div>
+    <div>Daniel R.<small>Backend, Go</small></div>
+    <div>Sofia P.<small>Platform, Kubernetes</small></div>
+  </section>
+  <p class="note">Design preview with sample data. These guilds, people, payouts, and numbers are made up.</p>
+</main>
+</body>
+</html>
