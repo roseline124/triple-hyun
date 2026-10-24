@@ -28,6 +28,13 @@ const seeds = (): Record<StoreName, readonly object[]> => ({
   profiles: [],
 });
 
+function seedInserts(name: StoreName, rows: readonly object[], verb: "INSERT" | "INSERT OR IGNORE") {
+  return rows.map((row) => ({
+    sql: `${verb} INTO ${name} (id, data) VALUES (?, ?)`,
+    args: [String((row as Record<string, unknown>)[KEY_FIELDS[name]]), JSON.stringify(row)],
+  }));
+}
+
 function connect(): Client {
   const url = process.env.TURSO_DATABASE_URL;
   if (!url && process.env.VERCEL) {
@@ -48,10 +55,7 @@ export function getDb(): Promise<Client> {
         STORES.flatMap((name) => [
           `CREATE TABLE IF NOT EXISTS ${name} (id TEXT PRIMARY KEY, data TEXT NOT NULL)`,
           // 이미 있는 행은 덮어쓰지 않으므로 재시작·동시 콜드스타트에도 안전하다.
-          ...data[name].map((row) => ({
-            sql: `INSERT OR IGNORE INTO ${name} (id, data) VALUES (?, ?)`,
-            args: [String((row as Record<string, unknown>)[KEY_FIELDS[name]]), JSON.stringify(row)],
-          })),
+          ...seedInserts(name, data[name], "INSERT OR IGNORE"),
         ]),
         "write",
       );
@@ -129,4 +133,23 @@ export const txPutOne = <T extends object>(tx: Transaction, store: StoreName, va
 
 export function isStoreName(name: string): name is StoreName {
   return name in KEY_FIELDS;
+}
+
+/**
+ * 시연 데이터 초기화. seed 가 있는 store(길드·일감·지갑·거래·유저)를 비우고 seed 를 다시 넣는다.
+ * 능력 검사 프로필(profiles)은 사람마다 저장한 결과라 지우지 않는다.
+ */
+export async function resetSeededStores(): Promise<void> {
+  const db = await getDb();
+  const data = seeds();
+  const seeded = STORES.filter((name) => name !== "profiles");
+  await db.batch(
+    seeded.flatMap((name) => [`DELETE FROM ${name}`, ...seedInserts(name, data[name], "INSERT")]),
+    "write",
+  );
+}
+
+/** DB 연결 확인용 가벼운 쿼리. */
+export async function pingDb(): Promise<void> {
+  await (await getDb()).execute("SELECT 1");
 }

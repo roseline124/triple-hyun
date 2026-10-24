@@ -4,6 +4,7 @@ import { LookupForm } from "@/app/scan/lookup/LookupForm";
 import { CredentialFields } from "@/app/scan/CredentialFields";
 import { Recommendations, ScanResultView } from "@/app/scan/ResultView";
 import { ScanForm } from "@/app/scan/ScanForm";
+import { TagCurator } from "@/app/scan/TagCurator";
 import { ErrorTile, LoadingTile } from "@/app/scan/ui";
 import { seedGuilds, seedQuests } from "@/lib/seed";
 import type { ScanResult } from "@/lib/types";
@@ -78,6 +79,61 @@ describe("Recommendations", () => {
     const out = html(<Recommendations tags={["Open source"]} guilds={[]} quests={seedQuests()} />);
     expect(out).toContain("Revenue share");
     expect(out).not.toContain("$0");
+  });
+});
+
+describe("TagCurator", () => {
+  const base = {
+    scan: result,
+    tags: ["Technical writing"],
+    savedTags: ["Technical writing"],
+    onChange: () => {},
+    onSaved: () => {},
+    guilds: seedGuilds(),
+    quests: seedQuests(),
+  };
+
+  it("lists my tags as removable buttons and suggests tags that fit, with reasons and demand", () => {
+    const out = html(<TagCurator {...base} />);
+    expect(out).toContain("Tags that fit you");
+    expect(out).toContain("(1 of 6)");
+    expect(out).toContain('aria-label="Remove Technical writing"');
+    expect(out).toContain('aria-label="Add Developer content"');
+    expect(out).toContain("Found in your scan");
+    expect(out).toContain("Often paired with Technical writing");
+    expect(out).toContain("1 guild · 1 open quest");
+    expect(out).not.toContain('aria-label="Add QA automation"');
+  });
+
+  it("only offers saving when there are credentials and unsaved changes", () => {
+    expect(html(<TagCurator {...base} />)).not.toContain("Save my tags");
+    const clean = html(<TagCurator {...base} credentials={{ nickname: "Maya", pin: "1234" }} />);
+    expect(clean).toMatch(/<button[^>]*disabled=""[^>]*>Save my tags</);
+    expect(clean).not.toContain("Undo changes");
+    const dirty = html(
+      <TagCurator {...base} tags={[...base.tags, "AI review"]} credentials={{ nickname: "Maya", pin: "1234" }} />,
+    );
+    expect(dirty).not.toMatch(/<button[^>]*disabled=""[^>]*>Save my tags</);
+    expect(dirty).toContain("Undo changes");
+  });
+
+  it("disables adding once 6 tags are picked and says why", () => {
+    const six = ["Technical writing", "a", "b", "c", "d", "e"];
+    const out = html(<TagCurator {...base} tags={six} savedTags={six} />);
+    expect(out).toMatch(/<button[^>]*aria-label="Add Developer content"[^>]*disabled=""/);
+    expect(out).toContain("Remove one to add another.");
+  });
+
+  it("shows an empty state when no tags are picked", () => {
+    expect(html(<TagCurator {...base} tags={[]} />)).toContain("No tags yet.");
+  });
+});
+
+describe("ScanResultView with saved tag picks", () => {
+  it("starts from the saved picks instead of the AI tags", () => {
+    const out = html(<ScanResultView result={result} curatedTags={["AI review"]} />);
+    expect(out).toContain("AI review");
+    expect(out).not.toMatch(/aria-label="Your tags"[^]*Developer content/);
   });
 });
 

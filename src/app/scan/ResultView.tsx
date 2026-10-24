@@ -4,15 +4,32 @@ import Link from "next/link";
 import { useState } from "react";
 import { listGuilds } from "@/features/guild/service";
 import { recommendGuilds, recommendQuests, type GuildMatch, type QuestMatch } from "@/features/scan/match";
+import type { Credentials } from "@/features/scan/schema";
 import { listQuests } from "@/features/quest/service";
 import { formatUsd } from "@/lib/format";
 import type { Guild, Quest, ScanResult } from "@/lib/types";
 import { useAsync } from "@/lib/useAsync";
+import { TagCurator, type TagSelection } from "./TagCurator";
 import { ErrorTile, LoadingTile, outlineButton } from "./ui";
 
 const SOURCE_LABEL = { resume: "From your résumé", answer: "From your answers" } as const;
 
-export function ScanResultView({ result }: { result: ScanResult }) {
+export function ScanResultView({
+  result,
+  curatedTags = null,
+  credentials,
+}: {
+  result: ScanResult;
+  /** 저장된 큐레이션 태그. null 이면 AI가 뽑은 `result.tags` 로 시작한다. */
+  curatedTags?: string[] | null;
+  credentials?: Credentials;
+}) {
+  const [savedTags, setSavedTags] = useState(curatedTags ?? result.tags);
+  const [tags, setTags] = useState(savedTags);
+  const onSaved = (next: string[]) => {
+    setSavedTags(next);
+    setTags(next);
+  };
   return (
     <div className="grid gap-4">
       <section aria-labelledby="scan-result" className="rounded-hero bg-brown-950 p-8 text-cream-100">
@@ -24,9 +41,9 @@ export function ScanResultView({ result }: { result: ScanResult }) {
           {result.archetype}
         </h2>
         <p className="m-0">{result.summary}</p>
-        {result.tags.length > 0 && (
+        {tags.length > 0 && (
           <ul aria-label="Your tags" className="m-0 mt-4 flex list-none flex-wrap gap-2 p-0">
-            {result.tags.map((tag) => (
+            {tags.map((tag) => (
               <li key={tag} className="rounded-pill bg-brown-800 px-3 py-1 text-small text-cream-100">
                 {tag}
               </li>
@@ -77,7 +94,9 @@ export function ScanResultView({ result }: { result: ScanResult }) {
         </ul>
       </section>
 
-      <RecommendationsLoader tags={result.tags} />
+      <RecommendationsLoader
+        curator={{ scan: result, tags, savedTags, onChange: setTags, onSaved, credentials }}
+      />
 
       <p className="m-0 text-caption text-muted">
         AI estimate based only on what you shared. Not a verified assessment; scores are relative.
@@ -88,14 +107,14 @@ export function ScanResultView({ result }: { result: ScanResult }) {
 
 const loadCatalog = () => Promise.all([listGuilds(), listQuests()]);
 
-/** 길드·일감 목록을 읽어 태그가 겹치는 것을 보여준다. 실패해도 위쪽 결과는 그대로 보인다. */
-export function RecommendationsLoader({ tags }: { tags: string[] }) {
+/** 길드·일감 목록을 읽어 태그 큐레이션과 겹치는 추천을 보여준다. 실패해도 위쪽 결과는 그대로 보인다. */
+export function RecommendationsLoader({ curator }: { curator: TagSelection }) {
   // 재시도는 key 를 바꿔 다시 마운트한다. useAsync 에는 안정된 함수만 넘긴다.
   const [attempt, setAttempt] = useState(0);
-  return <CatalogMatches key={attempt} tags={tags} onRetry={() => setAttempt((n) => n + 1)} />;
+  return <CatalogMatches key={attempt} curator={curator} onRetry={() => setAttempt((n) => n + 1)} />;
 }
 
-function CatalogMatches({ tags, onRetry }: { tags: string[]; onRetry: () => void }) {
+function CatalogMatches({ curator, onRetry }: { curator: TagSelection; onRetry: () => void }) {
   const state = useAsync(loadCatalog);
 
   if (state.status === "loading") return <LoadingTile label="Finding guilds and quests that fit…" />;
@@ -114,7 +133,12 @@ function CatalogMatches({ tags, onRetry }: { tags: string[]; onRetry: () => void
     );
   }
   const [guilds, quests] = state.data;
-  return <Recommendations tags={tags} guilds={guilds} quests={quests} />;
+  return (
+    <>
+      <TagCurator {...curator} guilds={guilds} quests={quests} />
+      <Recommendations tags={curator.tags} guilds={guilds} quests={quests} />
+    </>
+  );
 }
 
 export function Recommendations({ tags, guilds, quests }: { tags: string[]; guilds: Guild[]; quests: Quest[] }) {

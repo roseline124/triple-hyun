@@ -20,6 +20,8 @@ export type Profile = {
   failedAttempts: number;
   lockedUntil: string | null;
   scan: ScanResult | null;
+  /** 사용자가 고른 태그. 이 필드가 없던 프로필은 undefined 다. 재검사하면 null 로 돌아간다. */
+  curatedTags?: string[] | null;
   scanInput: ScanInputRecord | null;
   createdAt: string;
   updatedAt: string;
@@ -94,6 +96,7 @@ export async function ensureProfile(credentials: Credentials, now: Date = new Da
     failedAttempts: 0,
     lockedUntil: null,
     scan: null,
+    curatedTags: null,
     scanInput: null,
     createdAt: stamp,
     updatedAt: stamp,
@@ -117,7 +120,12 @@ export async function saveScanResult(
   scanInput: ScanInputRecord,
   now: Date = new Date(),
 ): Promise<void> {
-  await putOne("profiles", { ...profile, scan, scanInput, updatedAt: now.toISOString() });
+  await putOne("profiles", { ...profile, scan, scanInput, curatedTags: null, updatedAt: now.toISOString() });
+}
+
+/** 고른 태그를 저장한다. 허용 목록 검증은 호출하는 쪽(route)이 끝낸 값을 받는다. */
+export async function saveCuratedTags(profile: Profile, tags: string[], now: Date = new Date()): Promise<void> {
+  await putOne("profiles", { ...profile, curatedTags: tags, updatedAt: now.toISOString() });
 }
 
 /** 조회용. 없는 닉네임과 틀린 PIN을 구분하지 않는다. */
@@ -127,6 +135,7 @@ export async function lookupProfile(credentials: Credentials, now: Date = new Da
   return {
     nickname: profile.nickname,
     scan: profile.scan,
+    curatedTags: profile.curatedTags ?? null,
     scanInput: profile.scanInput,
     updatedAt: profile.updatedAt,
   };

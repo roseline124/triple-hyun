@@ -48,6 +48,14 @@ Person(profile.scan.tags) ──겹침── Guild(tags) ──겹침── Ques
 - 빈 상태: "No matching guilds yet. Browse all guilds." / "No open quests match yet. Browse all quests."
 - 카드 클릭은 `/guilds/[id]`, `/quests/[id]`.
 
+### 4.1 태그 큐레이션 (2026-10-24 추가)
+AI 태그가 길드·일감 태그와 안 겹치는 문제를 사용자가 직접 고쳐 쓰게 한다. 결과 화면 "Tags that fit you" 섹션.
+- 추천(`features/scan/curate.ts` `suggestTags`, 순수 함수, AI 추가 호출 없음): 지금 고른 태그 밖의 카탈로그 태그(+ 빠진 AI 태그)를 점수로 정렬해 최대 5개.
+  빠진 AI 태그 +3, 능력 이름과 단어(가벼운 어간) 겹침 +2, 제2의 직업 제목과 겹침 +1, 내 태그와 같은 길드·열린 일감에 함께 붙은 곳마다 +2. 이유와 "N guilds · M open quests"를 표시.
+- 고르기: 태그 제거(×)·추가(+ Add), 최대 6개. 추천 길드·일감이 즉시 다시 계산된다.
+- 저장 `POST /api/profile/tags { nickname, pin, tags[1..6] }` → `{ tags }`. 허용 목록(검사 AI 태그 ∪ 길드·일감 태그) 밖이면 400, 검사 전이면 409 `no_scan`.
+  `profile.curatedTags`에 따로 저장해 AI 원본 `scan.tags`는 보존한다. 재검사하면 `curatedTags`는 null로 초기화. lookup 응답에 `curatedTags` 포함.
+
 ## 5. 데이터
 ### 타입 (`src/lib/types.ts`는 `ScanResult` 변경만, 공유 파일 → B에게 알림)
 ```ts

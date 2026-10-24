@@ -42,6 +42,9 @@ Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design
 - [x] 뼈대, 공유 타입, seed, SQLite(libSQL) 읽기 서비스, 화면 틀
 - [x] 능력 검사(A): 닉네임+PIN 프로필, 적응형 질문, 근거 검증, 태그 매칭, `/scan/lookup` — 실제 Claude 호출은 아직 미검증(단위 테스트는 mock). 길드·지갑은 프로필 id에 귀속(길드는 `docs/specs/guild.md`)
 - [x] 길드 검색·필터, 모집, 생성, 가입·탈퇴(가입비 $35, 시작 크레딧 $100) (A) — 스펙 `docs/specs/guild.md`. 가입비는 B의 `ledger.debit`(`guild_fee`)으로 차감하고, 지갑이 없는 프로필은 첫 가입 때 $100로 만든다
+- [x] 태그 큐레이션(A): 결과 화면에서 나와 맞는 태그 추천·추가·제거·저장, 길드·일감 추천 즉시 갱신 — `POST /api/profile/tags`, 스펙 4.1절
+- [x] 시연 데이터 초기화 `POST /api/admin/reset`(헤더 `x-reset-token` = env `RESET_TOKEN`, 없으면 항상 401). seed store(길드·일감·지갑·거래·유저)를 되돌리고 `profiles`는 유지. 프로필 지갑도 지워지며 다음 가입 때 $100로 다시 만들어진다
+- [x] 헬스체크 `GET /api/health`(DB `SELECT 1`, 실패 시 503 `unavailable`)
 - [x] 더미 충전, debit/credit, 거래 내역 (B) — `POST /api/me/wallet/charge`, `GET /api/me/transactions`
 - [x] 퀘스트 검색 / 신청 / 완료 (B) — 검색은 클라이언트 필터, `POST /api/quests/:id/apply`(신청 즉시 배정), `POST /api/quests/:id/complete`(보상은 담당자 지갑에 바로 지급)
 
