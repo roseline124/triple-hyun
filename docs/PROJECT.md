@@ -4,7 +4,7 @@
 직업을 잃은 IT 실무자가 RPG처럼 전직하고, 길드로 모여 프로젝트(퀘스트)로 수익을 만든다.
 
 ## 90초 시연 흐름 (가정)
-1. `/scan` 능력 검사: 경력 입력 → Claude가 능력치·제2의 직업·추천 태그 생성 (실제 호출)
+1. `/scan` 능력 검사: 닉네임+PIN, 이력서 붙여넣기 → AI 적응형 질문 → Claude가 근거 있는 능력·제2의 직업·태그 생성 (실제 호출). 태그가 겹치는 길드·일감을 바로 보여준다
 2. `/guilds` 검색 → 길드 가입 (가입비는 더미 크레딧에서 차감)
 3. `/quests` 게시판 → 신청 → 작업 완료 시 보상 지급
 
@@ -12,7 +12,7 @@
 로그인(현재 유저는 seed의 `u-me` 고정), 실제 결제, GPS, 길드 랭킹/연합/경매, 평판 시스템.
 
 ## 스택
-Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design/tailwind-theme.css`). 데이터는 서버 SQLite(libSQL, `src/lib/db.ts`)에 두고 첫 접속 때 seed를 넣는다. 브라우저는 `/api/data/*`, `/api/me/scan`으로 읽고 쓴다.
+Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design/tailwind-theme.css`). 데이터는 서버 SQLite(libSQL, `src/lib/db.ts`)에 두고 첫 접속 때 seed를 넣는다. 브라우저는 `/api/data/*`(길드·일감·지갑)로 읽는다. 능력 검사 프로필(닉네임+PIN)은 별도 `profiles` 스토어에 두고 `/api/scan*`, `/api/profile/lookup`으로만 접근한다(브라우저 읽기 비허용). 스펙은 `docs/specs/ability-test.md`.
 로컬은 `local.db` 파일, Vercel은 Turso(`TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`)를 쓴다. 현재 유저가 고정이라 모든 방문자가 같은 데이터를 공유한다.
 `ANTHROPIC_API_KEY`는 서버에만 둔다(`.env.local`, 예시는 `.env.example`).
 기본 모델 `claude-sonnet-5-5`.
@@ -38,7 +38,7 @@ Next.js(App Router) + TypeScript + pnpm + Tailwind CSS v4(테마는 `docs/design
 
 ## 구현 현황
 - [x] 뼈대, 공유 타입, seed, SQLite(libSQL) 읽기 서비스, 화면 틀
-- [x] `/api/scan` + 폼(입력·로딩·오류·성공) — 실제 Claude 호출 코드는 단위 테스트(mock)만 검증됨
+- [x] 능력 검사(A): 닉네임+PIN 프로필, 적응형 질문, 근거 검증, 태그 매칭, `/scan/lookup` — 실제 Claude 호출은 아직 미검증(단위 테스트는 mock). 고정 유저 `u-me`(지갑·길드)와는 의도적으로 분리
 - [ ] 길드 검색 필터 / 가입 (A)
 - [ ] 더미 충전, debit/credit, 거래 내역 (B)
 - [ ] 퀘스트 검색 / 신청 / 완료 (B)
