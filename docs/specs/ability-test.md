@@ -144,7 +144,7 @@ type Question = {
 ## 7. 화면 (UX writing은 영어)
 1. **Input** (`/scan`): 제목 "Find what you're good at — including what you haven't noticed".
    "Nickname", "4-digit PIN"(`type="password"`, `inputMode="numeric"`, `pattern="[0-9]{4}"`, 도움말 "You'll need both to view your results later."),
-   "Résumé or LinkedIn text", "Interests (optional)", 글자 수 카운터, 5절 고지, 기존 닉네임 재검사 고지, 버튼 "Continue".
+   "Résumé or LinkedIn text", "Interests (optional)", 글자 수 카운터, 5절 고지, 기존 닉네임 재검사 고지, 버튼 "Scan".
    하단 링크 "Already scanned? Look up your results" → `/scan/lookup`.
 2. **Questions**: "Question 2 of 4", 라디오 그룹 + "Something else" 입력, "Back", "Show my results". 키보드로 전부 조작 가능.
 3. **Result**: archetype + summary → Skills(능력치 바 + 숫자, `evidence` 인용문, "From your résumé"/"From your answers") →

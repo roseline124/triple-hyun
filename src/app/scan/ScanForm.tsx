@@ -196,7 +196,7 @@ function InputStep({
 
       <p>
         <button type="submit" className={primaryButton}>
-          {error && canSkip ? "Try again" : "Continue"}
+          {error && canSkip ? "Try again" : "Scan"}
         </button>
       </p>
       <p className="text-small">
