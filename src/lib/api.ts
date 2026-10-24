@@ -25,6 +25,7 @@ export class ApiFailure extends Error {
 /** ApiFailure 는 그대로, 그 밖의 예외는 fallback 문구의 500 으로 바꾼다. */
 export function failFrom(e: unknown, fallback: string): Response {
   if (e instanceof ApiFailure) return fail(e.code, e.message, e.status);
+  console.error(e);
   return fail("internal", fallback, 500);
 }
 

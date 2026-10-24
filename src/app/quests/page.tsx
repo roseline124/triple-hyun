@@ -88,7 +88,7 @@ function QuestBoard({ quests }: { quests: Quest[] }) {
           No quests match your filters.{" "}
           <button
             type="button"
-            className="bg-transparent p-0 font-bold text-brown-950 underline hover:bg-transparent"
+            className="inline-flex min-h-11 items-center bg-transparent px-1 py-0 font-bold text-brown-950 underline hover:bg-transparent"
             onClick={() => setFilter({ query: "", region: "", status: "" })}
           >
             Clear filters
