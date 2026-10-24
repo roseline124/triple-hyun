@@ -38,6 +38,16 @@ describe("GuildCard", () => {
   it("omits the roles line when there are none", () => {
     expect(html(<GuildCard guild={{ ...docs, lookingFor: [] }} />)).not.toContain("Looking for");
   });
+
+  it("lists the guild tags as labeled chips", () => {
+    const out = html(<GuildCard guild={docs} />);
+    expect(out).toContain('aria-label="Guild tags"');
+    for (const t of docs.tags) expect(out).toContain(`>${t}</li>`);
+  });
+
+  it("omits the tag list when the guild has no tags", () => {
+    expect(html(<GuildCard guild={{ ...docs, tags: [] }} />)).not.toContain("Guild tags");
+  });
 });
 
 describe("GuildList", () => {
