@@ -5,7 +5,10 @@ export type RecruitStatus = "recruiting" | "full" | "closed";
 
 export const normalizeGuildName = (name: string) => name.trim().replace(/\s+/g, " ").toLowerCase();
 
-/** 이미 저장된 행에 새 필드가 없을 수 있어 기본값을 채운다. */
+/**
+ * 이미 저장된 행에 새 필드가 없을 수 있어 기본값을 채운다.
+ * 가입비는 모든 길드에 같은 규칙이라, 예전 seed($5·$3)로 저장된 행도 JOIN_FEE_USD 로 덮는다.
+ */
 export function withDefaults(raw: Partial<Guild> & Pick<Guild, "id">): Guild {
   return {
     name: "",
@@ -14,11 +17,11 @@ export function withDefaults(raw: Partial<Guild> & Pick<Guild, "id">): Guild {
     tags: [],
     ownerId: "",
     memberIds: [],
-    joinFee: JOIN_FEE_USD,
     recruiting: true,
     maxMembers: DEFAULT_MAX_MEMBERS,
     lookingFor: [],
     ...raw,
+    joinFee: JOIN_FEE_USD,
   };
 }
 
