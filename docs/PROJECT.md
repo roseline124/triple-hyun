@@ -1,4 +1,4 @@
-# 길드 퀘스트 — 프로젝트 개요
+# worktree (길드 퀘스트) — 프로젝트 개요
 
 주제: "AI로 사라질 직업 1000만 명을 구할 제품" × "채팅창 다음의 인터페이스".
 직업을 잃은 IT 실무자가 RPG처럼 전직하고, 길드로 모여 프로젝트(퀘스트)로 수익을 만든다.
@@ -16,6 +16,9 @@ Next.js(App Router) + TypeScript + pnpm. 데이터는 서버 SQLite(libSQL, `src
 로컬은 `local.db` 파일, Vercel은 Turso(`TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`)를 쓴다. 현재 유저가 고정이라 모든 방문자가 같은 데이터를 공유한다.
 `ANTHROPIC_API_KEY`는 서버에만 둔다(`.env.local`, 예시는 `.env.example`).
 기본 모델 `claude-sonnet-5-5`.
+
+## 디자인
+서비스 이름은 `worktree`. 색, 글꼴, 컴포넌트 규칙과 PR 체크리스트는 `docs/design/DESIGN-BIBLE.md`를 따른다. 토큰은 `docs/design/tokens.css`가 기준이고 `globals.css`가 직접 import한다.
 
 ## 담당과 파일 소유권
 | 담당 | 기능 | 소유 폴더 | 화면 | API |

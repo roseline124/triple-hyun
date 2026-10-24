@@ -278,17 +278,17 @@ AI처럼 오래 걸리는 요청은 진행 상태와 취소 또는 시간 초과
 - [ ] 동작 변경에 대한 테스트를 추가했고 typecheck, lint, test, build를 실행했다
 ```
 
-## 11. 앱에 적용하는 순서 (아직 하지 않음)
+## 11. 앱에 적용하는 순서
 
-문서, 토큰, 로고 파일, 기준 화면만 추가한 상태다. 앱 코드는 바꾸지 않았다. 적용은 작은 작업으로 나눠서 진행한다.
+토큰, 로고, 기준 화면은 이미 있고, 앱에는 1~4번까지 적용했다. 나머지는 작은 작업으로 나눠서 진행한다.
 
-1. 브랜드 이름을 `Guild Quest`에서 `worktree`로 바꾼다(`layout.tsx`의 title, 헤더 로고, 메타데이터).
-2. 로고를 앱에 넣는다. Next.js는 `src/app/icon.svg`를 파비콘으로 자동 사용하므로 `worktree-icon.svg`를 그 이름으로 복사하고, 헤더에는 `<img>`로 쓴다(1절 규칙).
-3. 글꼴을 `next/font`로 불러온다(4절).
-4. `tokens.css`를 `globals.css`에서 불러오고, 기존 색 변수(`--accent: #4338ca` 등)를 의미 토큰으로 바꾼다.
-5. Tailwind v4를 설치할지 결정한다(`tailwindcss`, `@tailwindcss/postcss`, 새 devDependency 2개). 설치하면 preflight 때문에 기존 화면이 달라지므로 화면별로 확인한다.
-6. 공통 컴포넌트(Button, Tile, RewardBadge, QuestRow)를 먼저 만들고 두 사람이 같이 쓴다.
-7. 화면을 하나씩 옮긴다. 화면마다 3개 폭(1280, 768, 390) 캡처를 남긴다.
+1. [x] 브랜드 이름을 `Guild Quest`에서 `worktree`로 바꿨다(`layout.tsx`의 title, 헤더 로고, 메타데이터). `package.json`의 패키지 이름(`guild-quest`)은 아직 그대로다.
+2. [x] 로고를 앱에 넣었다. 앱이 서빙하는 복사본은 `public/worktree-icon.svg`(파비콘과 헤더)이고, `docs/design/assets/worktree-icon.svg` 원본과 바이트가 같은지 `tests/brand.test.tsx`가 확인한다. 로고를 바꿀 때는 두 파일을 같이 바꾼다.
+3. [x] 글꼴을 `next/font`로 불러온다(4절). 빌드 때 구글에서 내려받으므로 네트워크가 필요하다.
+4. [x] `src/app/globals.css`가 `docs/design/tokens.css`를 직접 import하고, 기존 색 값은 모두 토큰으로 바꿨다. raw hex가 없는지 테스트가 확인한다.
+5. [ ] Tailwind v4를 설치할지 결정한다(`tailwindcss`, `@tailwindcss/postcss`, 새 devDependency 2개). 설치하면 preflight 때문에 기존 화면이 달라지므로 화면별로 확인한다.
+6. [ ] 공통 컴포넌트(Button, Tile, RewardBadge, QuestRow)를 먼저 만들고 두 사람이 같이 쓴다.
+7. [ ] 화면을 하나씩 벤토 구조로 옮긴다. 화면마다 3개 폭(1280, 768, 390) 캡처를 남긴다. 지금 화면에는 바이블과 어긋난 내용이 남아 있다(가운뎃점으로 이은 메타 문자열, 시드 데이터의 "Docs Alchemists" 같은 번역투 이름 등).
 
 ## 12. 이 문서에서 검증한 것과 못 한 것
 

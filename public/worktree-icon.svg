@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>워크트리 Worktree</title>
+  <!-- 배경: 슬라이드와 같은 다크 브라운 -->
+  <rect width="512" height="512" rx="112" fill="#140C09"/>
+  <!-- 줄기와 가지: 한 사람의 경력(줄기)이 여러 갈래의 일(가지)로 뻗는다 -->
+  <g fill="none" stroke="#FFF4E8" stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M256 398 V150"/>
+    <path d="M256 318 C256 262 206 246 166 214"/>
+    <path d="M256 268 C256 222 306 208 346 182"/>
+  </g>
+  <!-- 뿌리: 길드(함께 버티는 기반) -->
+  <path d="M176 412 H336" stroke="#E8C49A" stroke-width="22" stroke-linecap="round"/>
+  <!-- 열매: 찾아낸 일. 맨 위 하나가 지금 고른 다음 일 -->
+  <circle cx="256" cy="118" r="44" fill="#FF6A2B"/>
+  <circle cx="146" cy="198" r="34" fill="#E8C49A"/>
+  <circle cx="366" cy="166" r="34" fill="#E8C49A"/>
+</svg>
