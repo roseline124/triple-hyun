@@ -47,7 +47,7 @@ function QuestBoard({ quests }: { quests: Quest[] }) {
           <label htmlFor="quest-region">Location</label>
           <select
             id="quest-region"
-            className={FIELD}
+            className={`${FIELD} pr-10`}
             value={filter.region}
             onChange={(e) => set({ region: e.target.value })}
           >
@@ -63,7 +63,7 @@ function QuestBoard({ quests }: { quests: Quest[] }) {
           <label htmlFor="quest-status">Status</label>
           <select
             id="quest-status"
-            className={FIELD}
+            className={`${FIELD} pr-10`}
             value={filter.status}
             onChange={(e) => set({ status: e.target.value as QuestStatus | "" })}
           >

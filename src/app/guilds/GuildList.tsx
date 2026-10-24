@@ -33,7 +33,7 @@ export function GuildList({ guilds }: { guilds: Guild[] }) {
           <label htmlFor="guild-region">Location</label>
           <select
             id="guild-region"
-            className={textInput}
+            className={`${textInput} pr-10`}
             value={filter.region}
             onChange={(e) => setFilter({ ...filter, region: e.target.value })}
           >
